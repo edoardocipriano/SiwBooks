@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lista Libri</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/header.html :: header}"></div>
+<h2>Elenco Libri</h2>
+
+<div th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+    <div class="admin-controls">
+        <a th:href="@{/books/admin/new}" class="btn btn-edit">Aggiungi Nuovo Libro</a>
+    </div>
+</div>
+
+<ul class="book-list">
+    <li th:each="book : ${books}" class="book-item">
+        <a th:href="@{/books/{id}(id=${book.id})}" th:text="${book.title}"></a>
+        <span th:if="${#authorization.expression('hasRole(''ADMIN'')')}" class="item-actions">
+            <a th:href="@{/books/admin/edit/{id}(id=${book.id})}" class="btn-small btn-edit">Modifica</a>
+            <form th:action="@{/books/admin/delete/{id}(id=${book.id})}" method="get" style="display: inline;">
+                <button type="submit" class="btn-small btn-delete" onclick="return confirm('Sei sicuro di voler eliminare questo libro?');">Elimina</button>
+            </form>
+        </span>
+    </li>
+</ul>
+</body>
+</html>

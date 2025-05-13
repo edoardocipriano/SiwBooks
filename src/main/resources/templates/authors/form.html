@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${isEdit != null && isEdit ? 'Modifica Autore' : 'Nuovo Autore'}">Autore</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+<div th:replace="~{fragments/header.html :: header}"></div>
+
+<h2 th:text="${isEdit != null && isEdit ? 'Modifica Autore' : 'Inserisci Autore'}">Gestione Autore</h2>
+
+<form th:action="@{/authors/admin/save}" th:object="${author}" method="post" enctype="multipart/form-data">
+    <input type="hidden" th:field="*{id}" />
+    <label>Nome: <input type="text" th:field="*{name}" required /></label><br/>
+    <label>Cognome: <input type="text" th:field="*{surname}" required /></label><br/>
+    <label>Data di nascita: <input type="date" th:field="*{birthDate}" required /></label><br/>
+    <label>Data di morte: <input type="date" th:field="*{deathDate}" /></label><br/>
+    <label>Nazionalità: <input type="text" th:field="*{nationality}" required /></label><br/>
+    <label>Foto: <input type="file" name="photo" /></label><br/>
+    <div th:if="${isEdit != null && isEdit && author.photoFileName != null}">
+        <p>Foto attuale:</p>
+        <img th:src="@{'/uploads/authors/' + ${author.id} + '/' + ${author.photoFileName}}" 
+             alt="Foto autore" width="100"/>
+        <p>Carica una nuova foto solo se vuoi sostituire quella esistente.</p>
+    </div>
+    <button type="submit" th:text="${isEdit != null && isEdit ? 'Aggiorna' : 'Salva'}">Salva</button>
+</form>
+
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Dettagli Libro</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+<div th:replace="~{fragments/header.html :: header}"></div>
+
+<div class="container">
+    <h2 th:text="${book.title}"></h2>
+    
+    <div th:if="${errorMessage}" class="error">
+        <p th:text="${errorMessage}">Errore</p>
+    </div>
+    
+    <div th:if="${successMessage}" class="success">
+        <p th:text="${successMessage}">Successo</p>
+    </div>
+    
+    <div th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+        <div class="admin-controls">
+            <a th:href="@{/books/admin/edit/{id}(id=${book.id})}" class="btn btn-edit">Modifica</a>
+            <form th:action="@{/books/admin/delete/{id}(id=${book.id})}" method="get" style="display: inline;">
+                <button type="submit" class="btn btn-delete" onclick="return confirm('Sei sicuro di voler eliminare questo libro?');">Elimina</button>
+            </form>
+        </div>
+    </div>
+    
+    <p><strong>Anno:</strong> <span th:text="${book.publicationYear}"></span></p>
+    
+    <h3>Autori:</h3>
+    <ul>
+        <li th:each="author : ${book.authors}">
+            <a th:href="@{/authors/{id}(id=${author.id})}" th:text="${author.name + ' ' + author.surname}"></a>
+        </li>
+    </ul>
+    
+    <h3>Immagini:</h3>
+    <div th:each="img : ${book.images}" style="display: inline-block; margin: 10px;">
+        <img th:src="@{'/uploads/' + ${book.id} + '/' + ${img.fileName}}" width="200" />
+    </div>
+    
+    <h3>Recensioni:</h3>
+    <div th:if="${book.reviews == null || #lists.isEmpty(book.reviews)}" class="message">
+        <p>Questo libro non ha ancora recensioni. Sii il primo a recensirlo!</p>
+    </div>
+    <ul th:if="${book.reviews != null && !#lists.isEmpty(book.reviews)}">
+        <li th:each="review : ${book.reviews}" class="review-item">
+            <strong th:text="${review.user != null ? review.user.username : 'Utente sconosciuto'}"></strong>:
+            <span th:text="${review.rating}"></span> stelle -
+            <em th:text="${review.title}"></em>
+            <p th:text="${review.text}"></p>
+            <div class="review-actions">
+                <!-- Admin delete button -->
+                <span th:if="${#authorization.expression('hasRole(''ADMIN'')')}" class="item-actions">
+                    <form th:action="@{/reviews/admin/delete/{id}(id=${review.id})}" method="get" style="display: inline;">
+                        <button type="submit" class="btn-small btn-delete" onclick="return confirm('Sei sicuro di voler eliminare questa recensione?');">Elimina</button>
+                    </form>
+                </span>
+                
+                <!-- User edit button for own reviews -->
+                <span th:if="${#authorization.expression('isAuthenticated()')}" class="item-actions">
+                    <span th:with="authenticated=${#authentication.principal.username}">
+                        <a th:if="${review.user != null && review.user.username == authenticated}" 
+                           th:href="@{/reviews/edit/{id}(id=${review.id})}" 
+                           class="btn-small btn-edit">Modifica</a>
+                    </span>
+                </span>
+            </div>
+        </li>
+    </ul>
+    
+    <div th:if="${#authorization.expression('hasRole(''USER'')')}">
+        <a th:href="@{/reviews/add/{bookId}(bookId=${book.id})}" class="btn btn-add">Aggiungi recensione</a>
+    </div>
+</div>
+
+</body>
+</html>

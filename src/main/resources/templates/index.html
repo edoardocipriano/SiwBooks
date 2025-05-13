@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>SiwBooks - La tua libreria online</title>
+    <th:block th:replace="~{fragments/imports.html :: head}"></th:block>
+</head>
+<body>
+    <div th:replace="~{fragments/header.html :: header}"></div>
+    
+    <div class="container">
+        <section class="hero fade-in">
+            <h1>Benvenuto in SiwBooks</h1>
+            <p class="lead">La tua libreria online per scoprire, condividere e recensire i tuoi libri preferiti</p>
+            
+            <div class="hero-actions">
+                <a th:href="@{/books}" class="btn btn-primary slide-in-left">Esplora Libri</a>
+                <a th:href="@{/authors}" class="btn btn-secondary slide-in-right">Scopri Autori</a>
+            </div>
+        </section>
+        
+        <section class="features stagger-load">
+            <div class="feature-item">
+                <div class="feature-icon">📚</div>
+                <h3>Vasta Collezione</h3>
+                <p>Esplora una ricca libreria di libri di ogni genere e periodo storico.</p>
+            </div>
+            
+            <div class="feature-item">
+                <div class="feature-icon">✍️</div>
+                <h3>Autori</h3>
+                <p>Scopri la biografia e le opere dei tuoi autori preferiti.</p>
+            </div>
+            
+            <div class="feature-item">
+                <div class="feature-icon">⭐</div>
+                <h3>Recensioni</h3>
+                <p>Leggi e scrivi recensioni per condividere la tua esperienza di lettura.</p>
+            </div>
+            
+            <div class="feature-item">
+                <div class="feature-icon">🔍</div>
+                <h3>Ricerca Avanzata</h3>
+                <p>Trova facilmente qualsiasi libro con il nostro sistema di ricerca.</p>
+            </div>
+        </section>
+        
+        <section class="cta fade-in-up">
+            <h2>Inizia Subito</h2>
+            <p>Registrati gratuitamente per accedere a tutte le funzionalità di SiwBooks</p>
+            <a th:href="@{/register}" class="btn btn-accent pulse">Registrati</a>
+        </section>
+    </div>
+    
+    <div th:replace="~{fragments/footer.html :: footer}"></div>
+    
+    <style>
+        .hero {
+            text-align: center;
+            padding: 3rem 1rem;
+            margin-bottom: 3rem;
+            background-color: var(--card-bg-color);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+        
+        .lead {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        
+        .hero-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background-color: var(--card-bg-color);
+            color: var(--secondary-color);
+            border: 2px solid var(--secondary-color);
+        }
+        
+        .btn-accent {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        
+        .feature-item {
+            background-color: var(--card-bg-color);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            text-align: center;
+            transition: all var(--transition-speed) ease;
+        }
+        
+        .feature-item:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--hover-shadow);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .cta {
+            text-align: center;
+            padding: 3rem;
+            margin: 3rem 0;
+            background-color: var(--card-bg-color);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            border-top: 4px solid var(--accent-color);
+        }
+        
+        @media (max-width: 768px) {
+            .hero-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</body>
+</html>

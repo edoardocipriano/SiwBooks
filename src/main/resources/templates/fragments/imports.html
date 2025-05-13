@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- CSS files -->
+    <link rel="stylesheet" th:href="@{/css/theme.css}"/>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+    <link rel="stylesheet" th:href="@{/css/forms.css}"/>
+    <link rel="stylesheet" th:href="@{/css/animations.css}"/>
+    <link rel="stylesheet" th:href="@{/css/reviews.css}"/>
+    <link rel="stylesheet" th:href="@{/css/search.css}"/>
+    
+    <!-- JS files -->
+    <script th:src="@{/js/main.js}" defer></script>
+    <script th:src="@{/js/theme.js}" defer></script>
+    <script th:src="@{/js/animations.js}" defer></script>
+</head>
+
+<head th:fragment="book-head">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- CSS files -->
+    <link rel="stylesheet" th:href="@{/css/theme.css}"/>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+    <link rel="stylesheet" th:href="@{/css/forms.css}"/>
+    <link rel="stylesheet" th:href="@{/css/animations.css}"/>
+    <link rel="stylesheet" th:href="@{/css/reviews.css}"/>
+    <link rel="stylesheet" th:href="@{/css/search.css}"/>
+    
+    <!-- JS files -->
+    <script th:src="@{/js/main.js}" defer></script>
+    <script th:src="@{/js/theme.js}" defer></script>
+    <script th:src="@{/js/animations.js}" defer></script>
+    <script th:src="@{/js/books.js}" defer></script>
+</head>
+
+<head th:fragment="author-head">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- CSS files -->
+    <link rel="stylesheet" th:href="@{/css/theme.css}"/>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+    <link rel="stylesheet" th:href="@{/css/forms.css}"/>
+    <link rel="stylesheet" th:href="@{/css/animations.css}"/>
+    
+    <!-- JS files -->
+    <script th:src="@{/js/main.js}" defer></script>
+    <script th:src="@{/js/theme.js}" defer></script>
+    <script th:src="@{/js/animations.js}" defer></script>
+    <script th:src="@{/js/authors.js}" defer></script>
+</head>
+
+<head th:fragment="review-head">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- CSS files -->
+    <link rel="stylesheet" th:href="@{/css/theme.css}"/>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+    <link rel="stylesheet" th:href="@{/css/forms.css}"/>
+    <link rel="stylesheet" th:href="@{/css/animations.css}"/>
+    <link rel="stylesheet" th:href="@{/css/reviews.css}"/>
+    
+    <!-- JS files -->
+    <script th:src="@{/js/main.js}" defer></script>
+    <script th:src="@{/js/theme.js}" defer></script>
+    <script th:src="@{/js/animations.js}" defer></script>
+    <script th:src="@{/js/reviews.js}" defer></script>
+</head>
+
+<head th:fragment="search-head">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- CSS files -->
+    <link rel="stylesheet" th:href="@{/css/theme.css}"/>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+    <link rel="stylesheet" th:href="@{/css/forms.css}"/>
+    <link rel="stylesheet" th:href="@{/css/animations.css}"/>
+    <link rel="stylesheet" th:href="@{/css/search.css}"/>
+    
+    <!-- JS files -->
+    <script th:src="@{/js/main.js}" defer></script>
+    <script th:src="@{/js/theme.js}" defer></script>
+    <script th:src="@{/js/animations.js}" defer></script>
+    <script th:src="@{/js/search.js}" defer></script>
+</head>
+
+<div th:fragment="script-loader(scripts)">
+    <th:block th:each="script : ${scripts}">
+        <script th:src="@{${script}}" defer></script>
+    </th:block>
+</div>
+</html> 

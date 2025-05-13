@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${isEdit != null && isEdit ? 'Modifica Libro' : 'Nuovo Libro'}">Libro</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+<div th:replace="~{fragments/header.html :: header}"></div>
+
+<h1 th:text="${isEdit != null && isEdit ? 'Modifica Libro' : 'Inserisci un nuovo libro'}">Gestione Libro</h1>
+
+<form th:action="@{/books/admin/save}" th:object="${book}" method="post" enctype="multipart/form-data">
+    <input type="hidden" th:field="*{id}" />
+    
+    <div>
+        <label for="title">Titolo:</label>
+        <input type="text" id="title" th:field="*{title}" required />
+    </div>
+
+    <div>
+        <label for="publicationYear">Anno di pubblicazione:</label>
+        <input type="number" id="publicationYear" th:field="*{publicationYear}" required />
+    </div>
+
+    <div>
+        <label for="authors">Autori:</label>
+        <select id="authors" name="authorIds" multiple>
+            <option th:each="author : ${authors}"
+                    th:value="${author.id}"
+                    th:text="${author.name + ' ' + author.surname}"
+                    th:selected="${selectedAuthorIds != null && selectedAuthorIds.contains(author.id)}">
+            </option>
+        </select>
+        <small>Premi Ctrl (o Cmd su Mac) per selezionare più autori</small>
+    </div>
+
+    <div>
+        <label for="imageFiles">Aggiungi immagini:</label>
+        <input type="file" id="imageFiles" name="imageFiles" multiple />
+        <small>Seleziona immagini da aggiungere. Le immagini esistenti verranno mantenute.</small>
+    </div>
+
+    <div th:if="${isEdit != null && isEdit && book.images != null && !book.images.isEmpty()}">
+        <h3>Immagini esistenti:</h3>
+        <div class="existing-images">
+            <div th:each="img : ${book.images}" class="thumbnail">
+                <img th:src="@{'/uploads/' + ${book.id} + '/' + ${img.fileName}}" width="100" />
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <button type="submit" th:text="${isEdit != null && isEdit ? 'Aggiorna' : 'Salva'}">Salva</button>
+    </div>
+
+</form>
+
+</body>
+</html>

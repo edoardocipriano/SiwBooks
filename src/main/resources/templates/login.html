@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Login - SiwBooks</title>
+    <th:block th:replace="~{fragments/imports.html :: head}"></th:block>
+</head>
+<body>
+    <div th:replace="~{fragments/header.html :: header}"></div>
+    
+    <div class="form-container login-form fade-in">
+        <h2>Accedi a SiwBooks</h2>
+        
+        <div th:if="${param.error}" class="error shake">
+            Username o password non validi.
+        </div>
+        
+        <div th:if="${param.registered}" class="success" style="background-color: #d4edda; color: #155724; padding: 10px; margin-bottom: 15px; border-radius: 4px;">
+            Registrazione completata con successo! Ora puoi accedere.
+        </div>
+        
+        <form th:action="@{/login}" method="post">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required autofocus/>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required/>
+            </div>
+            
+            <button type="submit" class="btn btn-submit">Accedi</button>
+        </form>
+        
+        <div class="register-link" style="margin-top: 1rem; text-align: center;">
+            Non hai un account? <a th:href="@{/register}" class="pop-in">Registrati</a>
+        </div>
+    </div>
+    
+    <div th:replace="~{fragments/footer.html :: footer}"></div>
+</body>
+</html>

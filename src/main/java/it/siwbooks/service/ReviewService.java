@@ -1,0 +1,75 @@
+package it.siwbooks.service;
+
+import it.siwbooks.model.Book;
+import it.siwbooks.model.Review;
+import it.siwbooks.model.User;
+import it.siwbooks.repository.ReviewRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
+
+@Service
+@Transactional
+public class ReviewService {
+
+    @Autowired
+    private ReviewRepository reviewRepository;
+
+    @Transactional
+    public Review save(Review review) {
+        return reviewRepository.save(review);
+    }
+
+    @Transactional
+    public void deleteById(Long id) {
+        reviewRepository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Review> findById(Long id) {
+        return reviewRepository.findById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public boolean existsByBookIdAndUserId(Long bookId, Long userId) {
+        try {
+            System.out.println("Checking if review exists for bookId: " + bookId + " and userId: " + userId);
+            
+            if (bookId == null || userId == null) {
+                System.out.println("BookId or userId is null, returning false");
+                return false;
+            }
+            
+            // More efficient approach: directly filter using stream with null-safety
+            long count = reviewRepository.findAll().stream()
+                .filter(review -> review != null 
+                    && review.getBook() != null 
+                    && review.getUser() != null
+                    && bookId.equals(review.getBook().getId())
+                    && userId.equals(review.getUser().getId()))
+                .count();
+                
+            System.out.println("Found " + count + " matching reviews");
+            return count > 0;
+        } catch (Exception e) {
+            System.err.println("Error in existsByBookIdAndUserId: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public Optional<Review> findByBookAndUser(Book book, User user) {
+        try {
+            if (book == null || user == null) {
+                return Optional.empty();
+            }
+            return reviewRepository.findByBookAndUser(book, user);
+        } catch (Exception e) {
+            System.err.println("Error in findByBookAndUser: " + e.getMessage());
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+}

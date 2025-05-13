@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Autore</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+<div th:replace="~{fragments/header.html :: header}"></div>
+
+<h2 th:text="${author.name + ' ' + author.surname}"></h2>
+
+<div th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+    <div class="admin-controls">
+        <a th:href="@{/authors/admin/edit/{id}(id=${author.id})}" class="btn btn-edit">Modifica</a>
+        <form th:action="@{/authors/admin/delete/{id}(id=${author.id})}" method="get" style="display: inline;">
+            <button type="submit" class="btn btn-delete" onclick="return confirm('Sei sicuro di voler eliminare questo autore?');">Elimina</button>
+        </form>
+    </div>
+</div>
+
+<p>Nato il: <span th:text="${author.birthDate}"></span></p>
+<p th:if="${author.deathDate != null}">Deceduto il: <span th:text="${author.deathDate}"></span></p>
+<p>Nazionalità: <span th:text="${author.nationality}"></span></p>
+
+<h3>Foto:</h3>
+<img th:if="${author.photoFileName != null}" 
+     th:src="@{'/uploads/authors/' + ${author.id} + '/' + ${author.photoFileName}}" 
+     alt="Foto autore" width="200"/>
+
+<h3>Libri:</h3>
+<ul>
+    <li th:each="book : ${author.books}">
+        <a th:href="@{/books/{id}(id=${book.id})}" th:text="${book.title}"></a>
+    </li>
+</ul>
+
+</body>
+</html>

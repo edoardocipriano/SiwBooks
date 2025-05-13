@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${isEdit} ? 'Modifica Recensione' : 'Scrivi Recensione'">Scrivi Recensione</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/header.html :: header}"></div>
+
+<div class="container">
+    <h2 th:if="${!isEdit}">Scrivi una recensione per "<span th:text="${bookTitle}">Libro</span>"</h2>
+    <h2 th:if="${isEdit}">Modifica la tua recensione per "<span th:text="${bookTitle}">Libro</span>"</h2>
+    
+    <div th:if="${errorMessage}" class="error">
+        <p th:text="${errorMessage}">Errore</p>
+    </div>
+    
+    <!-- Form for adding a new review -->
+    <form th:if="${!isEdit}" th:action="@{/reviews/add/{bookId}(bookId=${bookId})}" th:object="${review}" method="post">
+        <div class="form-group">
+            <label for="title">Titolo della recensione:</label>
+            <input type="text" id="title" th:field="*{title}" required/>
+        </div>
+        
+        <div class="form-group">
+            <label for="rating">Voto (1-5 stelle):</label>
+            <input type="number" id="rating" th:field="*{rating}" min="1" max="5" required/>
+        </div>
+        
+        <div class="form-group">
+            <label for="text">Testo della recensione:</label>
+            <textarea id="text" th:field="*{text}" rows="5" cols="50" required></textarea>
+        </div>
+        
+        <button type="submit" class="btn btn-submit">Invia recensione</button>
+    </form>
+    
+    <!-- Form for editing an existing review -->
+    <form th:if="${isEdit}" th:action="@{/reviews/update/{reviewId}(reviewId=${review.id})}" th:object="${review}" method="post">
+        <div class="form-group">
+            <label for="edit-title">Titolo della recensione:</label>
+            <input type="text" id="edit-title" th:field="*{title}" required/>
+        </div>
+        
+        <div class="form-group">
+            <label for="edit-rating">Voto (1-5 stelle):</label>
+            <input type="number" id="edit-rating" th:field="*{rating}" min="1" max="5" required/>
+        </div>
+        
+        <div class="form-group">
+            <label for="edit-text">Testo della recensione:</label>
+            <textarea id="edit-text" th:field="*{text}" rows="5" cols="50" required></textarea>
+        </div>
+        
+        <button type="submit" class="btn btn-submit">Aggiorna recensione</button>
+        <a th:if="${review.book != null}" th:href="@{/books/{bookId}(bookId=${review.book.id})}" class="btn btn-cancel">Annulla</a>
+        <a th:if="${review.book == null}" th:href="@{/books}" class="btn btn-cancel">Annulla</a>
+    </form>
+</div>
+
+</body>
+</html>

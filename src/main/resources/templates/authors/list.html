@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Lista Autori</title>
+<link rel="stylesheet" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/header.html :: header}"></div>
+<h2>Elenco Autori</h2>
+
+<div th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+    <div class="admin-controls">
+        <a th:href="@{/authors/admin/new}" class="btn btn-edit">Aggiungi Nuovo Autore</a>
+    </div>
+</div>
+
+<ul class="author-list">
+    <li th:each="author : ${authors}" class="author-item">
+        <a th:href="@{/authors/{id}(id=${author.id})}" th:text="${author.name + ' ' + author.surname}"></a>
+        <span th:if="${#authorization.expression('hasRole(''ADMIN'')')}" class="item-actions">
+            <a th:href="@{/authors/admin/edit/{id}(id=${author.id})}" class="btn-small btn-edit">Modifica</a>
+            <form th:action="@{/authors/admin/delete/{id}(id=${author.id})}" method="get" style="display: inline;">
+                <button type="submit" class="btn-small btn-delete" onclick="return confirm('Sei sicuro di voler eliminare questo autore?');">Elimina</button>
+            </form>
+        </span>
+    </li>
+</ul>
+</body>
+</html>

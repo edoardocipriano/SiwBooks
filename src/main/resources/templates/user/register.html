@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Registrazione - SiwBooks</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+    <link rel="stylesheet" th:href="@{/css/forms.css}"/>
+</head>
+<body>
+    <div th:replace="~{fragments/header.html :: header}"></div>
+    
+    <div class="form-container login-form">
+        <h2>Registrati a SiwBooks</h2>
+        
+        <div th:if="${errorMessage}" class="error">
+            <p th:text="${errorMessage}">Errore</p>
+        </div>
+        
+        <form th:action="@{/register}" method="post" th:object="${userForm}">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" th:field="*{username}" required autofocus/>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" th:field="*{password}" required/>
+            </div>
+            
+            <div class="form-group">
+                <label for="confirmPassword">Conferma Password</label>
+                <input type="password" id="confirmPassword" th:field="*{confirmPassword}" required/>
+            </div>
+            
+            <button type="submit">Registrati</button>
+        </form>
+        
+        <div class="login-link" style="margin-top: 1rem; text-align: center;">
+            Hai già un account? <a th:href="@{/login}">Accedi</a>
+        </div>
+    </div>
+</body>
+</html> 
