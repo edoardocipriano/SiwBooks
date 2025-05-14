@@ -46,6 +46,7 @@ public class ReviewController {
             model.addAttribute("review", review);
             model.addAttribute("bookId", bookId);
             model.addAttribute("bookTitle", book.getTitle());
+            model.addAttribute("isEdit", false);
             return "reviews/form";
         } catch (Exception e) {
             System.err.println("Errore in reviewForm: " + e.getMessage());
