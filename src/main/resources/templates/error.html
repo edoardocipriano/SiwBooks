@@ -3,25 +3,6 @@
 <head>
     <title>Errore - SiwBooks</title>
     <th:block th:replace="~{fragments/imports.html :: head}"></th:block>
-</head>
-<body>
-    <div th:replace="~{fragments/header.html :: header}"></div>
-    
-    <div class="container">
-        <div class="error-container fade-in">
-            <div class="error-icon">⚠️</div>
-            <h1>Oops! Qualcosa è andato storto</h1>
-            <p th:text="${message}" class="error-message">Si è verificato un errore durante l'elaborazione della richiesta.</p>
-            
-            <div class="error-actions">
-                <a th:href="@{/}" class="btn btn-primary">Torna alla Home</a>
-                <button onclick="window.history.back()" class="btn btn-secondary">Torna Indietro</button>
-            </div>
-        </div>
-    </div>
-    
-    <div th:replace="~{fragments/footer.html :: footer}"></div>
-    
     <style>
         .error-container {
             max-width: 600px;
@@ -72,5 +53,23 @@
             }
         }
     </style>
+</head>
+<body>
+    <div th:replace="~{fragments/header.html :: header}"></div>
+    
+    <div class="container">
+        <div class="error-container fade-in">
+            <div class="error-icon">⚠️</div>
+            <h1>Oops! Qualcosa è andato storto</h1>
+            <p th:text="${message}" class="error-message">Si è verificato un errore durante l'elaborazione della richiesta.</p>
+            
+            <div class="error-actions">
+                <a th:href="@{/}" class="btn btn-primary">Torna alla Home</a>
+                <button onclick="window.history.back()" class="btn btn-secondary">Torna Indietro</button>
+            </div>
+        </div>
+    </div>
+    
+    <div th:replace="~{fragments/footer.html :: footer}"></div>
 </body>
 </html>

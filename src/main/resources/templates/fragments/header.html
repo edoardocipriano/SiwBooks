@@ -1,34 +1,49 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <body>
 <header>
     <nav>
-        <a th:href="@{/}">Home</a> |
-        <a th:href="@{/books}">Libri</a> |
-        <a th:href="@{/authors}">Autori</a>
+        <!-- Navigation principale -->
+        <div class="nav-main">
+            <a th:href="@{/}">Home</a>
+            <a th:href="@{/books}">Libri</a>
+            <a th:href="@{/authors}">Autori</a>
+        </div>
 
-        <span th:if="${#authorization.expression('isAuthenticated()')}">
-            <span th:if="${#authorization.expression('hasRole(''USER'')') and not #authorization.expression('hasRole(''ADMIN'')')}">
-                |
-                <a th:href="@{/user/profile}">Profilo</a>
-            </span>
-            <span th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
-                |
-                <a th:href="@{/books/admin/new}">Nuovo Libro</a> |
-                <a th:href="@{/authors/admin/new}">Nuovo Autore</a> |
-                <a th:href="@{/admin/create-admin}">Crea Admin</a>
-            </span>
-            |
-            <form th:action="@{/logout}" method="post" style="display:inline;">
-                <button type="submit" style="background:none; border:none; padding:0; color:var(--secondary-color); text-decoration:underline; cursor:pointer; font-family:inherit; font-size:inherit;">Logout</button>
-            </form>
-        </span>
+        <!-- Navigation utente -->
+        <div class="nav-user">
+            <!-- Menu per utenti autenticati -->
+            <div sec:authorize="isAuthenticated()" class="nav-authenticated">
+                <!-- Menu per utenti normali (solo USER) -->
+                <div sec:authorize="hasRole('USER')" class="nav-user-menu">
+                    <a th:href="@{/user/profile}">Profilo</a>
+                    <!-- Debug: questo dovrebbe apparire per utenti USER -->
+                    <span style="font-size: 0.8em; color: #666;">[USER]</span>
+                </div>
+                
+                <!-- Menu per admin -->
+                <div sec:authorize="hasRole('ADMIN')" class="nav-admin">
+                    <a th:href="@{/books/admin/new}">Nuovo Libro</a>
+                    <a th:href="@{/authors/admin/new}">Nuovo Autore</a>
+                    <a th:href="@{/admin/create-admin}">Crea Admin</a>
+                    <!-- Debug: questo dovrebbe apparire per utenti ADMIN -->
+                    <span style="font-size: 0.8em; color: #666;">[ADMIN]</span>
+                </div>
+                
+                <!-- Logout button -->
+                <form th:action="@{/logout}" method="post" class="logout-form">
+                    <button type="submit" class="logout-btn">Logout</button>
+                </form>
+            </div>
 
-        <span th:unless="${#authorization.expression('isAuthenticated()')}">
-            |
-            <a th:href="@{/login}">Login</a> |
-            <a th:href="@{/register}">Registrati</a>
-        </span>
+            <!-- Menu per utenti non autenticati -->
+            <div sec:authorize="!isAuthenticated()" class="nav-guest">
+                <a th:href="@{/login}">Login</a>
+                <a th:href="@{/register}">Registrati</a>
+                <!-- Debug: questo dovrebbe apparire per utenti non autenticati -->
+                <span style="font-size: 0.8em; color: #666;">[GUEST]</span>
+            </div>
+        </div>
     </nav>
 </header>
 </body>

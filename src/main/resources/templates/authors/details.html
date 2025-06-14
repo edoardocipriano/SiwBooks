@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Autore</title>
-    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <th:block th:replace="~{fragments/imports.html :: author-head}"></th:block>
 </head>
 <body>
 <div th:replace="~{fragments/header.html :: header}"></div>
@@ -11,9 +11,13 @@
 
 <div th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
     <div class="admin-controls">
-        <a th:href="@{/authors/admin/edit/{id}(id=${author.id})}" class="btn btn-edit">Modifica</a>
-        <form th:action="@{/authors/admin/delete/{id}(id=${author.id})}" method="get" style="display: inline;">
-            <button type="submit" class="btn btn-delete" onclick="return confirm('Sei sicuro di voler eliminare questo autore?');">Elimina</button>
+        <a th:href="@{/authors/admin/edit/{id}(id=${author.id})}" class="btn btn-edit">
+            <span class="btn-icon">✏️</span> Modifica
+        </a>
+        <form th:action="@{/authors/admin/delete/{id}(id=${author.id})}" method="get">
+            <button type="submit" class="btn btn-delete" onclick="return confirm('Sei sicuro di voler eliminare questo autore?');">
+                <span class="btn-icon">🗑️</span> Elimina
+            </button>
         </form>
     </div>
 </div>

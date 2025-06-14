@@ -3,58 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <title th:text="${isEdit != null && isEdit ? 'Modifica Libro' : 'Nuovo Libro'}">Libro</title>
-    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <th:block th:replace="~{fragments/imports.html :: head}"></th:block>
 </head>
 <body>
 <div th:replace="~{fragments/header.html :: header}"></div>
 
-<h1 th:text="${isEdit != null && isEdit ? 'Modifica Libro' : 'Inserisci un nuovo libro'}">Gestione Libro</h1>
-
-<form th:action="@{/books/admin/save}" th:object="${book}" method="post" enctype="multipart/form-data">
-    <input type="hidden" th:field="*{id}" />
-    
-    <div>
-        <label for="title">Titolo:</label>
-        <input type="text" id="title" th:field="*{title}" required />
+<div class="form-container">
+    <div class="form-header">
+        <h1 th:text="${isEdit != null && isEdit ? '📚 Modifica Libro' : '📚 Nuovo Libro'}">Gestione Libro</h1>
+        <p th:text="${isEdit != null && isEdit ? 'Aggiorna le informazioni del libro' : 'Aggiungi un nuovo libro alla collezione'}">Descrizione operazione</p>
     </div>
 
-    <div>
-        <label for="publicationYear">Anno di pubblicazione:</label>
-        <input type="number" id="publicationYear" th:field="*{publicationYear}" required />
-    </div>
+    <form th:action="@{/books/admin/save}" th:object="${book}" method="post" enctype="multipart/form-data">
+        <input type="hidden" th:field="*{id}" />
+        
+        <!-- Informazioni di Base -->
+        <div class="form-section">
+            <h3><span class="form-section-icon">📖</span>Informazioni di Base</h3>
+            
+            <div class="form-grid">
+                <div class="form-group floating-label">
+                    <input type="text" id="title" th:field="*{title}" placeholder=" " required />
+                    <label for="title">Titolo del Libro</label>
+                    <div class="form-help">
+                        <span class="form-help-icon">💡</span>
+                        Inserisci il titolo completo del libro
+                    </div>
+                </div>
 
-    <div>
-        <label for="authors">Autori:</label>
-        <select id="authors" name="authorIds" multiple>
-            <option th:each="author : ${authors}"
-                    th:value="${author.id}"
-                    th:text="${author.name + ' ' + author.surname}"
-                    th:selected="${selectedAuthorIds != null && selectedAuthorIds.contains(author.id)}">
-            </option>
-        </select>
-        <small>Premi Ctrl (o Cmd su Mac) per selezionare più autori</small>
-    </div>
-
-    <div>
-        <label for="imageFiles">Aggiungi immagini:</label>
-        <input type="file" id="imageFiles" name="imageFiles" multiple />
-        <small>Seleziona immagini da aggiungere. Le immagini esistenti verranno mantenute.</small>
-    </div>
-
-    <div th:if="${isEdit != null && isEdit && book.images != null && !book.images.isEmpty()}">
-        <h3>Immagini esistenti:</h3>
-        <div class="existing-images">
-            <div th:each="img : ${book.images}" class="thumbnail">
-                <img th:src="@{'/uploads/' + ${book.id} + '/' + ${img.fileName}}" width="100" />
+                <div class="form-group floating-label">
+                    <input type="number" id="publicationYear" th:field="*{publicationYear}" placeholder=" " required min="1000" max="2024" />
+                    <label for="publicationYear">Anno di Pubblicazione</label>
+                    <div class="form-help">
+                        <span class="form-help-icon">📅</span>
+                        Anno di prima pubblicazione (es. 1984)
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div>
-        <button type="submit" th:text="${isEdit != null && isEdit ? 'Aggiorna' : 'Salva'}">Salva</button>
-    </div>
+        <!-- Autori -->
+        <div class="form-section">
+            <h3><span class="form-section-icon">✍️</span>Autori</h3>
+            
+            <div class="form-group">
+                <label for="authors">Seleziona Autori</label>
+                <select id="authors" name="authorIds" multiple>
+                    <option th:each="author : ${authors}"
+                            th:value="${author.id}"
+                            th:text="${author.name + ' ' + author.surname}"
+                            th:selected="${selectedAuthorIds != null && selectedAuthorIds.contains(author.id)}">
+                    </option>
+                </select>
+                <div class="form-help">
+                    <span class="form-help-icon">⌨️</span>
+                    Premi Ctrl (o Cmd su Mac) per selezionare più autori
+                </div>
+            </div>
+        </div>
 
-</form>
+        <!-- Immagini -->
+        <div class="form-section">
+            <h3><span class="form-section-icon">🖼️</span>Immagini</h3>
+            
+            <div class="form-group">
+                <label for="imageFiles">Aggiungi Nuove Immagini</label>
+                <div class="file-input-container">
+                    <input type="file" id="imageFiles" name="imageFiles" multiple accept="image/*" />
+                    <div class="file-input-display">
+                        <div class="file-input-icon">📷</div>
+                        <div class="file-input-text">
+                            <strong>Trascina le immagini qui o clicca per selezionare</strong>
+                            <small>Supporta PNG, JPG, JPEG. Massimo 10MB per file.</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-help">
+                    <span class="form-help-icon">🎨</span>
+                    Le immagini esistenti verranno mantenute
+                </div>
+            </div>
+
+            <!-- Immagini Esistenti -->
+            <div th:if="${isEdit != null && isEdit && book.images != null && !book.images.isEmpty()}">
+                <h4 style="margin: 2rem 0 1rem 0; color: var(--primary-color);">
+                    <span style="margin-right: 0.5rem;">🖼️</span>Immagini Esistenti
+                </h4>
+                <div class="existing-images">
+                    <div th:each="img : ${book.images}" class="thumbnail">
+                        <img th:src="@{'/uploads/' + ${book.id} + '/' + ${img.fileName}}" 
+                             th:alt="${book.title + ' - Immagine'}" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Azioni -->
+        <div class="form-actions">
+            <button type="submit" class="btn-primary" th:text="${isEdit != null && isEdit ? '💾 Aggiorna Libro' : '✨ Crea Libro'}">Salva</button>
+            <a th:href="@{/books}" class="btn-secondary">❌ Annulla</a>
+        </div>
+    </form>
+</div>
+
+<div th:replace="~{fragments/footer.html :: footer}"></div>
+
+<script>
+// Enhanced file input functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('imageFiles');
+    const fileDisplay = document.querySelector('.file-input-display');
+    
+    fileInput.addEventListener('change', function() {
+        const files = this.files;
+        if (files.length > 0) {
+            const fileNames = Array.from(files).map(file => file.name).join(', ');
+            fileDisplay.querySelector('strong').textContent = `${files.length} file selezionati`;
+            fileDisplay.querySelector('small').textContent = fileNames;
+            fileDisplay.style.borderColor = 'var(--secondary-color)';
+            fileDisplay.style.background = 'linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(52, 152, 219, 0.05))';
+        }
+    });
+    
+    // Drag and drop functionality
+    fileDisplay.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        this.style.borderColor = 'var(--secondary-color)';
+        this.style.background = 'linear-gradient(135deg, rgba(52, 152, 219, 0.15), rgba(52, 152, 219, 0.08))';
+    });
+    
+    fileDisplay.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        this.style.borderColor = 'var(--border-color)';
+        this.style.background = 'linear-gradient(135deg, rgba(52, 152, 219, 0.05), rgba(52, 152, 219, 0.02))';
+    });
+    
+    fileDisplay.addEventListener('drop', function(e) {
+        e.preventDefault();
+        const files = e.dataTransfer.files;
+        fileInput.files = files;
+        fileInput.dispatchEvent(new Event('change'));
+        this.style.borderColor = 'var(--border-color)';
+        this.style.background = 'linear-gradient(135deg, rgba(52, 152, 219, 0.05), rgba(52, 152, 219, 0.02))';
+    });
+});
+</script>
 
 </body>
 </html>

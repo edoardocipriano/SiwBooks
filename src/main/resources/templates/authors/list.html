@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><title>Lista Autori</title>
-<link rel="stylesheet" th:href="@{/css/styles.css}"/>
+<head>
+    <title>Lista Autori</title>
+    <th:block th:replace="~{fragments/imports.html :: author-head}"></th:block>
 </head>
 <body>
 <div th:replace="~{fragments/header.html :: header}"></div>
@@ -9,7 +10,9 @@
 
 <div th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
     <div class="admin-controls">
-        <a th:href="@{/authors/admin/new}" class="btn btn-edit">Aggiungi Nuovo Autore</a>
+        <a th:href="@{/authors/admin/new}" class="btn btn-add">
+            <span class="btn-icon">✍️</span> Aggiungi Nuovo Autore
+        </a>
     </div>
 </div>
 
@@ -17,9 +20,13 @@
     <li th:each="author : ${authors}" class="author-item">
         <a th:href="@{/authors/{id}(id=${author.id})}" th:text="${author.name + ' ' + author.surname}"></a>
         <span th:if="${#authorization.expression('hasRole(''ADMIN'')')}" class="item-actions">
-            <a th:href="@{/authors/admin/edit/{id}(id=${author.id})}" class="btn-small btn-edit">Modifica</a>
-            <form th:action="@{/authors/admin/delete/{id}(id=${author.id})}" method="get" style="display: inline;">
-                <button type="submit" class="btn-small btn-delete" onclick="return confirm('Sei sicuro di voler eliminare questo autore?');">Elimina</button>
+            <a th:href="@{/authors/admin/edit/{id}(id=${author.id})}" class="btn-small btn-edit">
+                <span class="btn-icon">✏️</span> Modifica
+            </a>
+            <form th:action="@{/authors/admin/delete/{id}(id=${author.id})}" method="get">
+                <button type="submit" class="btn-small btn-delete" onclick="return confirm('Sei sicuro di voler eliminare questo autore?');">
+                    <span class="btn-icon">🗑️</span> Elimina
+                </button>
             </form>
         </span>
     </li>

@@ -9,6 +9,9 @@ import lombok.*;
 @Getter 
 @Setter
 @NoArgsConstructor @AllArgsConstructor
+@Table(uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"book_id", "user_id"}, name = "uk_review_book_user")
+})
 public class Review {
 
     @Id

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Lista Libri</title>
-    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+    <th:block th:replace="~{fragments/imports.html :: book-head}"></th:block>
 </head>
 <body>
 <div th:replace="~{fragments/header.html :: header}"></div>
@@ -10,7 +10,9 @@
 
 <div th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
     <div class="admin-controls">
-        <a th:href="@{/books/admin/new}" class="btn btn-edit">Aggiungi Nuovo Libro</a>
+        <a th:href="@{/books/admin/new}" class="btn btn-add">
+            <span class="btn-icon">📚</span> Aggiungi Nuovo Libro
+        </a>
     </div>
 </div>
 
@@ -18,9 +20,13 @@
     <li th:each="book : ${books}" class="book-item">
         <a th:href="@{/books/{id}(id=${book.id})}" th:text="${book.title}"></a>
         <span th:if="${#authorization.expression('hasRole(''ADMIN'')')}" class="item-actions">
-            <a th:href="@{/books/admin/edit/{id}(id=${book.id})}" class="btn-small btn-edit">Modifica</a>
-            <form th:action="@{/books/admin/delete/{id}(id=${book.id})}" method="get" style="display: inline;">
-                <button type="submit" class="btn-small btn-delete" onclick="return confirm('Sei sicuro di voler eliminare questo libro?');">Elimina</button>
+            <a th:href="@{/books/admin/edit/{id}(id=${book.id})}" class="btn-small btn-edit">
+                <span class="btn-icon">✏️</span> Modifica
+            </a>
+            <form th:action="@{/books/admin/delete/{id}(id=${book.id})}" method="get">
+                <button type="submit" class="btn-small btn-delete" onclick="return confirm('Sei sicuro di voler eliminare questo libro?');">
+                    <span class="btn-icon">🗑️</span> Elimina
+                </button>
             </form>
         </span>
     </li>

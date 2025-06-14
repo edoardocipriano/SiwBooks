@@ -42,17 +42,10 @@ public class ReviewService {
                 return false;
             }
             
-            // More efficient approach: directly filter using stream with null-safety
-            long count = reviewRepository.findAll().stream()
-                .filter(review -> review != null 
-                    && review.getBook() != null 
-                    && review.getUser() != null
-                    && bookId.equals(review.getBook().getId())
-                    && userId.equals(review.getUser().getId()))
-                .count();
-                
-            System.out.println("Found " + count + " matching reviews");
-            return count > 0;
+            // Usa il metodo del repository per una query più efficiente
+            boolean exists = reviewRepository.existsByBookIdAndUserId(bookId, userId);
+            System.out.println("Review exists: " + exists);
+            return exists;
         } catch (Exception e) {
             System.err.println("Error in existsByBookIdAndUserId: " + e.getMessage());
             e.printStackTrace();

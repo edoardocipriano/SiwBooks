@@ -31,14 +31,37 @@ public class ReviewController {
     // Form per aggiungere una recensione
     @GetMapping("/add/{bookId}")
     @Transactional(readOnly = true)
-    public String reviewForm(@PathVariable Long bookId, Model model) {
+    public String reviewForm(@PathVariable Long bookId, Model model, @AuthenticationPrincipal UserDetails userDetails) {
         try {
             System.out.println("Review form requested for book ID: " + bookId);
+            
+            // Verifica se l'utente è autenticato
+            if (userDetails == null) {
+                model.addAttribute("errorMessage", "Devi effettuare l'accesso per lasciare una recensione");
+                return "redirect:/login";
+            }
+            
             Book book = bookService.findById(bookId).orElse(null);
             if (book == null) {
                 System.err.println("Book with ID " + bookId + " not found");
                 model.addAttribute("errorMessage", "Libro non trovato");
                 return "redirect:/books";
+            }
+            
+            // Verifica se l'utente ha già recensito questo libro
+            try {
+                User user = userService.findByUsername(userDetails.getUsername()).orElse(null);
+                if (user != null) {
+                    boolean hasReview = reviewService.existsByBookIdAndUserId(bookId, user.getId());
+                    if (hasReview) {
+                        System.out.println("User " + user.getUsername() + " has already reviewed book " + book.getTitle());
+                        model.addAttribute("errorMessage", "Hai già recensito questo libro");
+                        return "redirect:/books/" + bookId;
+                    }
+                }
+            } catch (Exception e) {
+                System.err.println("Error checking existing review: " + e.getMessage());
+                // Continua comunque per sicurezza
             }
             
             Review review = new Review();

@@ -3,8 +3,15 @@
 <head th:fragment="head">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SiwBooks - La tua libreria digitale moderna">
+    <meta name="author" content="SiwBooks Team">
     
-    <!-- CSS files -->
+    <!-- Preload critical resources -->
+    <link rel="preload" th:href="@{/css/theme.css}" as="style">
+    <link rel="preload" th:href="@{/css/styles.css}" as="style">
+    <link rel="preload" th:href="@{/js/modern.js}" as="script">
+    
+    <!-- CSS files in order of importance -->
     <link rel="stylesheet" th:href="@{/css/theme.css}"/>
     <link rel="stylesheet" th:href="@{/css/styles.css}"/>
     <link rel="stylesheet" th:href="@{/css/forms.css}"/>
@@ -12,15 +19,21 @@
     <link rel="stylesheet" th:href="@{/css/reviews.css}"/>
     <link rel="stylesheet" th:href="@{/css/search.css}"/>
     
-    <!-- JS files -->
+    <!-- Core JS files -->
+    <script th:src="@{/js/modern.js}" defer></script>
     <script th:src="@{/js/main.js}" defer></script>
-    <script th:src="@{/js/theme.js}" defer></script>
     <script th:src="@{/js/animations.js}" defer></script>
 </head>
 
 <head th:fragment="book-head">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SiwBooks - Gestione Libri">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" th:href="@{/css/theme.css}" as="style">
+    <link rel="preload" th:href="@{/css/styles.css}" as="style">
+    <link rel="preload" th:href="@{/js/modern.js}" as="script">
     
     <!-- CSS files -->
     <link rel="stylesheet" th:href="@{/css/theme.css}"/>
@@ -31,8 +44,8 @@
     <link rel="stylesheet" th:href="@{/css/search.css}"/>
     
     <!-- JS files -->
+    <script th:src="@{/js/modern.js}" defer></script>
     <script th:src="@{/js/main.js}" defer></script>
-    <script th:src="@{/js/theme.js}" defer></script>
     <script th:src="@{/js/animations.js}" defer></script>
     <script th:src="@{/js/books.js}" defer></script>
 </head>
@@ -40,6 +53,12 @@
 <head th:fragment="author-head">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SiwBooks - Gestione Autori">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" th:href="@{/css/theme.css}" as="style">
+    <link rel="preload" th:href="@{/css/styles.css}" as="style">
+    <link rel="preload" th:href="@{/js/modern.js}" as="script">
     
     <!-- CSS files -->
     <link rel="stylesheet" th:href="@{/css/theme.css}"/>
@@ -48,8 +67,8 @@
     <link rel="stylesheet" th:href="@{/css/animations.css}"/>
     
     <!-- JS files -->
+    <script th:src="@{/js/modern.js}" defer></script>
     <script th:src="@{/js/main.js}" defer></script>
-    <script th:src="@{/js/theme.js}" defer></script>
     <script th:src="@{/js/animations.js}" defer></script>
     <script th:src="@{/js/authors.js}" defer></script>
 </head>
@@ -57,6 +76,12 @@
 <head th:fragment="review-head">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SiwBooks - Recensioni">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" th:href="@{/css/theme.css}" as="style">
+    <link rel="preload" th:href="@{/css/styles.css}" as="style">
+    <link rel="preload" th:href="@{/js/modern.js}" as="script">
     
     <!-- CSS files -->
     <link rel="stylesheet" th:href="@{/css/theme.css}"/>
@@ -66,8 +91,8 @@
     <link rel="stylesheet" th:href="@{/css/reviews.css}"/>
     
     <!-- JS files -->
+    <script th:src="@{/js/modern.js}" defer></script>
     <script th:src="@{/js/main.js}" defer></script>
-    <script th:src="@{/js/theme.js}" defer></script>
     <script th:src="@{/js/animations.js}" defer></script>
     <script th:src="@{/js/reviews.js}" defer></script>
 </head>
@@ -75,6 +100,12 @@
 <head th:fragment="search-head">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SiwBooks - Ricerca">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" th:href="@{/css/theme.css}" as="style">
+    <link rel="preload" th:href="@{/css/styles.css}" as="style">
+    <link rel="preload" th:href="@{/js/modern.js}" as="script">
     
     <!-- CSS files -->
     <link rel="stylesheet" th:href="@{/css/theme.css}"/>
@@ -84,15 +115,26 @@
     <link rel="stylesheet" th:href="@{/css/search.css}"/>
     
     <!-- JS files -->
+    <script th:src="@{/js/modern.js}" defer></script>
     <script th:src="@{/js/main.js}" defer></script>
-    <script th:src="@{/js/theme.js}" defer></script>
     <script th:src="@{/js/animations.js}" defer></script>
     <script th:src="@{/js/search.js}" defer></script>
 </head>
 
+<!-- Fragment for dynamic script loading -->
 <div th:fragment="script-loader(scripts)">
     <th:block th:each="script : ${scripts}">
         <script th:src="@{${script}}" defer></script>
     </th:block>
+</div>
+
+<!-- Performance optimization fragment -->
+<div th:fragment="performance-hints">
+    <!-- DNS prefetch for external resources -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    
+    <!-- Resource hints for better performance -->
+    <link rel="prefetch" th:href="@{/images/default-book.png}">
+    <link rel="prefetch" th:href="@{/images/default-author.png}">
 </div>
 </html> 

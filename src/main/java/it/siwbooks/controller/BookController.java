@@ -15,12 +15,16 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import it.siwbooks.model.User;
+import it.siwbooks.service.UserService;
+import it.siwbooks.service.ReviewService;
 
 @Controller
 @RequestMapping("/books")
@@ -37,6 +41,12 @@ public class BookController {
 
     @Autowired
     private AuthorService authorService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private ReviewService reviewService;
 
     // Visualizza tutti i libri
     @GetMapping
@@ -55,7 +65,7 @@ public class BookController {
     // Visualizza dettagli di un singolo libro
     @GetMapping("/{id}")
     @Transactional
-    public String showBook(@PathVariable Long id, Model model) {
+    public String showBook(@PathVariable Long id, Model model, @AuthenticationPrincipal UserDetails userDetails) {
         try {
             Optional<Book> bookOpt = bookService.findById(id);
             if (bookOpt.isPresent()) {
@@ -84,7 +94,25 @@ public class BookController {
                     book.setImages(new ArrayList<>());
                 }
                 
+                // Verifica se l'utente corrente ha già recensito questo libro
+                boolean userHasReviewed = false;
+                if (userDetails != null) {
+                    try {
+                        Optional<User> userOpt = userService.findByUsername(userDetails.getUsername());
+                        if (userOpt.isPresent()) {
+                            User user = userOpt.get();
+                            userHasReviewed = reviewService.existsByBookIdAndUserId(book.getId(), user.getId());
+                            System.out.println("User " + user.getUsername() + " has reviewed book " + book.getTitle() + ": " + userHasReviewed);
+                        }
+                    } catch (Exception e) {
+                        System.err.println("Error checking if user has reviewed book: " + e.getMessage());
+                        // In caso di errore, assumiamo che non abbia recensito per sicurezza
+                        userHasReviewed = false;
+                    }
+                }
+                
                 model.addAttribute("book", book);
+                model.addAttribute("userHasReviewed", Boolean.valueOf(userHasReviewed));
                 return "books/details";
             } else {
                 System.err.println("Libro con ID " + id + " non trovato");

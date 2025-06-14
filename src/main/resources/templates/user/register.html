@@ -2,8 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Registrazione - SiwBooks</title>
-    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
-    <link rel="stylesheet" th:href="@{/css/forms.css}"/>
+    <th:block th:replace="~{fragments/imports.html :: head}"></th:block>
 </head>
 <body>
     <div th:replace="~{fragments/header.html :: header}"></div>

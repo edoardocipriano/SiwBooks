@@ -27,8 +27,16 @@ function initializeNavigation() {
     
     navLinks.forEach(link => {
         const linkPath = link.getAttribute('href');
-        if (linkPath && (currentPath === linkPath || currentPath.startsWith(linkPath) && linkPath !== '/')) {
-            link.classList.add('active');
+        if (linkPath) {
+            // Remove any existing active class first
+            link.classList.remove('active');
+            
+            // Check for exact match or if current path starts with link path (but only for full segments)
+            if (currentPath === linkPath || 
+                (linkPath !== '/' && currentPath.startsWith(linkPath + '/')) ||
+                (linkPath !== '/' && currentPath === linkPath)) {
+                link.classList.add('active');
+            }
         }
         
         // Add hover animation

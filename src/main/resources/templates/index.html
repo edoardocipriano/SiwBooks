@@ -3,57 +3,8 @@
 <head>
     <title>SiwBooks - La tua libreria online</title>
     <th:block th:replace="~{fragments/imports.html :: head}"></th:block>
-</head>
-<body>
-    <div th:replace="~{fragments/header.html :: header}"></div>
-    
-    <div class="container">
-        <section class="hero fade-in">
-            <h1>Benvenuto in SiwBooks</h1>
-            <p class="lead">La tua libreria online per scoprire, condividere e recensire i tuoi libri preferiti</p>
-            
-            <div class="hero-actions">
-                <a th:href="@{/books}" class="btn btn-primary slide-in-left">Esplora Libri</a>
-                <a th:href="@{/authors}" class="btn btn-secondary slide-in-right">Scopri Autori</a>
-            </div>
-        </section>
-        
-        <section class="features stagger-load">
-            <div class="feature-item">
-                <div class="feature-icon">📚</div>
-                <h3>Vasta Collezione</h3>
-                <p>Esplora una ricca libreria di libri di ogni genere e periodo storico.</p>
-            </div>
-            
-            <div class="feature-item">
-                <div class="feature-icon">✍️</div>
-                <h3>Autori</h3>
-                <p>Scopri la biografia e le opere dei tuoi autori preferiti.</p>
-            </div>
-            
-            <div class="feature-item">
-                <div class="feature-icon">⭐</div>
-                <h3>Recensioni</h3>
-                <p>Leggi e scrivi recensioni per condividere la tua esperienza di lettura.</p>
-            </div>
-            
-            <div class="feature-item">
-                <div class="feature-icon">🔍</div>
-                <h3>Ricerca Avanzata</h3>
-                <p>Trova facilmente qualsiasi libro con il nostro sistema di ricerca.</p>
-            </div>
-        </section>
-        
-        <section class="cta fade-in-up">
-            <h2>Inizia Subito</h2>
-            <p>Registrati gratuitamente per accedere a tutte le funzionalità di SiwBooks</p>
-            <a th:href="@{/register}" class="btn btn-accent pulse">Registrati</a>
-        </section>
-    </div>
-    
-    <div th:replace="~{fragments/footer.html :: footer}"></div>
-    
     <style>
+        /* Page specific styles */
         .hero {
             text-align: center;
             padding: 3rem 1rem;
@@ -106,6 +57,7 @@
             box-shadow: var(--box-shadow);
             text-align: center;
             transition: all var(--transition-speed) ease;
+            border: 1px solid var(--border-color);
         }
         
         .feature-item:hover {
@@ -139,5 +91,54 @@
             }
         }
     </style>
+</head>
+<body>
+    <div th:replace="~{fragments/header.html :: header}"></div>
+    
+    <div class="container">
+        <section class="hero fade-in">
+            <h1>Benvenuto in SiwBooks</h1>
+            <p class="lead">La tua libreria online per scoprire, condividere e recensire i tuoi libri preferiti</p>
+            
+            <div class="hero-actions">
+                <a th:href="@{/books}" class="btn btn-primary slide-in-left">Esplora Libri</a>
+                <a th:href="@{/authors}" class="btn btn-secondary slide-in-right">Scopri Autori</a>
+            </div>
+        </section>
+        
+        <section class="features stagger-load">
+            <div class="feature-item">
+                <div class="feature-icon">📚</div>
+                <h3>Vasta Collezione</h3>
+                <p>Esplora una ricca libreria di libri di ogni genere e periodo storico.</p>
+            </div>
+            
+            <div class="feature-item">
+                <div class="feature-icon">✍️</div>
+                <h3>Autori</h3>
+                <p>Scopri la biografia e le opere dei tuoi autori preferiti.</p>
+            </div>
+            
+            <div class="feature-item">
+                <div class="feature-icon">⭐</div>
+                <h3>Recensioni</h3>
+                <p>Leggi e scrivi recensioni per condividere la tua esperienza di lettura.</p>
+            </div>
+            
+            <div class="feature-item">
+                <div class="feature-icon">🔍</div>
+                <h3>Ricerca Avanzata</h3>
+                <p>Trova facilmente qualsiasi libro con il nostro sistema di ricerca.</p>
+            </div>
+        </section>
+        
+        <section class="cta fade-in-up">
+            <h2>Inizia Subito</h2>
+            <p>Registrati gratuitamente per accedere a tutte le funzionalità di SiwBooks</p>
+            <a th:href="@{/register}" class="btn btn-accent pulse">Registrati</a>
+        </section>
+    </div>
+    
+    <div th:replace="~{fragments/footer.html :: footer}"></div>
 </body>
 </html>

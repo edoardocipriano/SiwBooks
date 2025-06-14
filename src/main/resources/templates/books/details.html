@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Dettagli Libro</title>
-    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <th:block th:replace="~{fragments/imports.html :: book-head}"></th:block>
 </head>
 <body>
 <div th:replace="~{fragments/header.html :: header}"></div>
@@ -20,9 +20,13 @@
     
     <div th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
         <div class="admin-controls">
-            <a th:href="@{/books/admin/edit/{id}(id=${book.id})}" class="btn btn-edit">Modifica</a>
-            <form th:action="@{/books/admin/delete/{id}(id=${book.id})}" method="get" style="display: inline;">
-                <button type="submit" class="btn btn-delete" onclick="return confirm('Sei sicuro di voler eliminare questo libro?');">Elimina</button>
+            <a th:href="@{/books/admin/edit/{id}(id=${book.id})}" class="btn btn-edit">
+                <span class="btn-icon">✏️</span> Modifica
+            </a>
+            <form th:action="@{/books/admin/delete/{id}(id=${book.id})}" method="get">
+                <button type="submit" class="btn btn-delete" onclick="return confirm('Sei sicuro di voler eliminare questo libro?');">
+                    <span class="btn-icon">🗑️</span> Elimina
+                </button>
             </form>
         </div>
     </div>
@@ -71,8 +75,17 @@
         </li>
     </ul>
     
+    <!-- Sezione per aggiungere recensioni -->
     <div th:if="${#authorization.expression('hasRole(''USER'')')}">
-        <a th:href="@{/reviews/add/{bookId}(bookId=${book.id})}" class="btn btn-add">Aggiungi recensione</a>
+        <!-- Mostra il pulsante solo se l'utente non ha già recensito questo libro -->
+        <div th:if="${userHasReviewed == null or userHasReviewed == false}">
+            <a th:href="@{/reviews/add/{bookId}(bookId=${book.id})}" class="btn btn-add">⭐ Aggiungi recensione</a>
+        </div>
+        
+        <!-- Messaggio se l'utente ha già recensito -->
+        <div th:if="${userHasReviewed != null and userHasReviewed == true}" class="message">
+            <p>✅ Hai già recensito questo libro. Puoi modificare la tua recensione cliccando su "Modifica" nella sezione recensioni.</p>
+        </div>
     </div>
 </div>
 

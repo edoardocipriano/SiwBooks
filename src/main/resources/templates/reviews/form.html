@@ -2,61 +2,139 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title th:text="${isEdit} ? 'Modifica Recensione' : 'Scrivi Recensione'">Scrivi Recensione</title>
-    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+    <th:block th:replace="~{fragments/imports.html :: review-head}"></th:block>
 </head>
 <body>
 <div th:replace="~{fragments/header.html :: header}"></div>
 
-<div class="container">
-    <h2 th:if="${!isEdit}">Scrivi una recensione per "<span th:text="${bookTitle}">Libro</span>"</h2>
-    <h2 th:if="${isEdit}">Modifica la tua recensione per "<span th:text="${bookTitle}">Libro</span>"</h2>
+<div class="form-container">
+    <div class="form-header">
+        <h1 th:if="${!isEdit}">⭐ Scrivi una Recensione</h1>
+        <h1 th:if="${isEdit}">✏️ Modifica Recensione</h1>
+        <p th:if="${!isEdit}">Condividi la tua opinione su "<strong th:text="${bookTitle}">Libro</strong>"</p>
+        <p th:if="${isEdit}">Modifica la tua recensione per "<strong th:text="${bookTitle}">Libro</strong>"</p>
+    </div>
     
-    <div th:if="${errorMessage}" class="error">
+    <div th:if="${errorMessage}" class="message error">
+        <span class="message-icon">❌</span>
         <p th:text="${errorMessage}">Errore</p>
     </div>
     
     <!-- Form for adding a new review -->
     <form th:if="${!isEdit}" th:action="@{/reviews/add/{bookId}(bookId=${bookId})}" th:object="${review}" method="post">
-        <div class="form-group">
-            <label for="title">Titolo della recensione:</label>
-            <input type="text" id="title" th:field="*{title}" required/>
-        </div>
         
-        <div class="form-group">
-            <label for="rating">Voto (1-5 stelle):</label>
-            <input type="number" id="rating" th:field="*{rating}" min="1" max="5" required/>
+        <!-- Valutazione -->
+        <div class="form-section">
+            <h3><span class="form-section-icon">⭐</span>Valutazione</h3>
+            
+            <div class="form-group">
+                <label for="rating">Il tuo voto</label>
+                <div class="rating-input">
+                    <input type="hidden" id="rating" th:field="*{rating}" />
+                    <div class="star-rating-container">
+                        <!-- Le stelle verranno generate dal JavaScript -->
+                    </div>
+                    <div class="rating-text">Eccellente</div>
+                </div>
+                <div class="form-help">
+                    <span class="form-help-icon">💫</span>
+                    Clicca sulle stelle per dare il tuo voto
+                </div>
+            </div>
         </div>
-        
-        <div class="form-group">
-            <label for="text">Testo della recensione:</label>
-            <textarea id="text" th:field="*{text}" rows="5" cols="50" required></textarea>
+
+        <!-- Contenuto Recensione -->
+        <div class="form-section">
+            <h3><span class="form-section-icon">📝</span>La Tua Recensione</h3>
+            
+            <div class="form-group floating-label">
+                <input type="text" id="title" th:field="*{title}" placeholder=" " required maxlength="100" />
+                <label for="title">Titolo della Recensione</label>
+                <div class="form-help">
+                    <span class="form-help-icon">💡</span>
+                    Un titolo accattivante per la tua recensione (max 100 caratteri)
+                </div>
+            </div>
+            
+            <div class="form-group floating-label">
+                <textarea id="text" th:field="*{text}" placeholder=" " required minlength="10" maxlength="1000"></textarea>
+                <label for="text">Cosa ne pensi di questo libro?</label>
+                <div class="form-help">
+                    <span class="form-help-icon">✍️</span>
+                    Condividi i tuoi pensieri, impressioni e opinioni (10-1000 caratteri)
+                </div>
+                <div class="character-counter">
+                    <span class="current">0</span>/<span class="max">1000</span> caratteri
+                </div>
+            </div>
         </div>
-        
-        <button type="submit" class="btn btn-submit">Invia recensione</button>
+
+        <!-- Azioni -->
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">🚀 Pubblica Recensione</button>
+            <a th:href="@{/books/{bookId}(bookId=${bookId})}" class="btn-secondary">❌ Annulla</a>
+        </div>
     </form>
     
     <!-- Form for editing an existing review -->
     <form th:if="${isEdit}" th:action="@{/reviews/update/{reviewId}(reviewId=${review.id})}" th:object="${review}" method="post">
-        <div class="form-group">
-            <label for="edit-title">Titolo della recensione:</label>
-            <input type="text" id="edit-title" th:field="*{title}" required/>
-        </div>
         
-        <div class="form-group">
-            <label for="edit-rating">Voto (1-5 stelle):</label>
-            <input type="number" id="edit-rating" th:field="*{rating}" min="1" max="5" required/>
+        <!-- Valutazione -->
+        <div class="form-section">
+            <h3><span class="form-section-icon">⭐</span>Valutazione</h3>
+            
+            <div class="form-group">
+                <label for="edit-rating">Il tuo voto</label>
+                <div class="rating-input">
+                    <input type="hidden" id="edit-rating" th:field="*{rating}" />
+                    <div class="star-rating-container">
+                        <!-- Le stelle verranno generate dal JavaScript -->
+                    </div>
+                    <div class="rating-text">Eccellente</div>
+                </div>
+                <div class="form-help">
+                    <span class="form-help-icon">💫</span>
+                    Clicca sulle stelle per modificare il tuo voto
+                </div>
+            </div>
         </div>
-        
-        <div class="form-group">
-            <label for="edit-text">Testo della recensione:</label>
-            <textarea id="edit-text" th:field="*{text}" rows="5" cols="50" required></textarea>
+
+        <!-- Contenuto Recensione -->
+        <div class="form-section">
+            <h3><span class="form-section-icon">📝</span>La Tua Recensione</h3>
+            
+            <div class="form-group floating-label">
+                <input type="text" id="edit-title" th:field="*{title}" placeholder=" " required maxlength="100" />
+                <label for="edit-title">Titolo della Recensione</label>
+                <div class="form-help">
+                    <span class="form-help-icon">💡</span>
+                    Un titolo accattivante per la tua recensione (max 100 caratteri)
+                </div>
+            </div>
+            
+            <div class="form-group floating-label">
+                <textarea id="edit-text" th:field="*{text}" placeholder=" " required minlength="10" maxlength="1000"></textarea>
+                <label for="edit-text">Cosa ne pensi di questo libro?</label>
+                <div class="form-help">
+                    <span class="form-help-icon">✍️</span>
+                    Condividi i tuoi pensieri, impressioni e opinioni (10-1000 caratteri)
+                </div>
+                <div class="character-counter">
+                    <span class="current">0</span>/<span class="max">1000</span> caratteri
+                </div>
+            </div>
         </div>
-        
-        <button type="submit" class="btn btn-submit">Aggiorna recensione</button>
-        <a th:if="${review.book != null}" th:href="@{/books/{bookId}(bookId=${review.book.id})}" class="btn btn-cancel">Annulla</a>
-        <a th:if="${review.book == null}" th:href="@{/books}" class="btn btn-cancel">Annulla</a>
+
+        <!-- Azioni -->
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">💾 Aggiorna Recensione</button>
+            <a th:if="${review.book != null}" th:href="@{/books/{bookId}(bookId=${review.book.id})}" class="btn-secondary">❌ Annulla</a>
+            <a th:if="${review.book == null}" th:href="@{/books}" class="btn-secondary">❌ Annulla</a>
+        </div>
     </form>
 </div>
+
+<div th:replace="~{fragments/footer.html :: footer}"></div>
 
 </body>
 </html>
