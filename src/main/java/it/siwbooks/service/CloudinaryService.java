@@ -27,10 +27,7 @@ public class CloudinaryService {
                     "folder", folder,
                     "public_id", publicId,
                     "overwrite", true,
-                    "resource_type", "auto",
-                    "transformation", ObjectUtils.asMap(
-                            "quality", "auto:good"
-                    )
+                    "resource_type", "auto"
             );
 
             Map uploadResult = cloudinary.uploader().upload(file.getBytes(), uploadOptions);
