@@ -48,4 +48,10 @@ public class AuthorService {
         // Poi cancella l'autore
         authorRepository.deleteById(id);
     }
+    
+    // 🔍 Cerca per nome o cognome (parziale, case insensitive)
+    @Transactional(readOnly = true)
+    public List<Author> searchByName(String keyword) {
+        return authorRepository.findByNameContainingIgnoreCaseOrSurnameContainingIgnoreCase(keyword, keyword);
+    }
 }

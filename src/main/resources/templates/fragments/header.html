@@ -9,6 +9,18 @@
             <a th:href="@{/books}">Libri</a>
             <a th:href="@{/authors}">Autori</a>
         </div>
+        
+        <!-- Barra di ricerca -->
+        <div class="nav-search">
+            <form th:action="@{/search}" method="get" class="search-form">
+                <input type="text" 
+                       name="query" 
+                       placeholder="Cerca libri o autori..." 
+                       class="search-input"
+                       th:value="${param.query}">
+                <button type="submit" class="search-btn">🔍</button>
+            </form>
+        </div>
 
         <!-- Navigation utente -->
         <div class="nav-user">

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Risultati Ricerca</title>
+    <th:block th:replace="~{fragments/imports.html :: head}"></th:block>
+    <style>
+        .search-info {
+            background: var(--card-bg-color);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 2rem;
+            box-shadow: var(--box-shadow);
+        }
+        
+        .search-query {
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+        
+        .results-section {
+            margin-bottom: 3rem;
+        }
+        
+        .results-count {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            background: var(--card-bg-color);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+        
+        .result-item {
+            background: var(--card-bg-color);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            transition: all var(--transition-speed) ease;
+            border-left: 4px solid transparent;
+        }
+        
+        .result-item:hover {
+            transform: translateX(5px);
+            border-left-color: var(--secondary-color);
+            box-shadow: var(--card-hover-shadow);
+        }
+        
+        .result-type {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: var(--secondary-color);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .result-type.author {
+            background: var(--accent-color);
+        }
+        
+        .result-title {
+            font-size: 1.25rem;
+            margin: 0.5rem 0;
+        }
+        
+        .result-meta {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="~{fragments/header.html :: header}"></div>
+    
+    <div class="container">
+        <div class="search-info" th:if="${query != null}">
+            <h2>Risultati per: <span class="search-query" th:text="${query}"></span></h2>
+            <p class="results-count">
+                Trovati <strong th:text="${totalResults}">0</strong> risultati
+            </p>
+        </div>
+        
+        <!-- Risultati Libri -->
+        <section class="results-section" th:if="${books != null && !books.isEmpty()}">
+            <h3>📚 Libri (<span th:text="${books.size()}">0</span>)</h3>
+            <div th:each="book : ${books}" class="result-item">
+                <span class="result-type">Libro</span>
+                <h4 class="result-title">
+                    <a th:href="@{/books/{id}(id=${book.id})}" th:text="${book.title}"></a>
+                </h4>
+                <p class="result-meta">
+                    Anno: <span th:text="${book.publicationYear}"></span>
+                    <span th:if="${book.authors != null && !book.authors.isEmpty()}">
+                        | Autori: 
+                        <span th:each="author, iterStat : ${book.authors}">
+                            <a th:href="@{/authors/{id}(id=${author.id})}" 
+                               th:text="${author.name + ' ' + author.surname}"></a><span th:if="${!iterStat.last}">, </span>
+                        </span>
+                    </span>
+                </p>
+            </div>
+        </section>
+        
+        <!-- Risultati Autori -->
+        <section class="results-section" th:if="${authors != null && !authors.isEmpty()}">
+            <h3>✍️ Autori (<span th:text="${authors.size()}">0</span>)</h3>
+            <div th:each="author : ${authors}" class="result-item">
+                <span class="result-type author">Autore</span>
+                <h4 class="result-title">
+                    <a th:href="@{/authors/{id}(id=${author.id})}" 
+                       th:text="${author.name + ' ' + author.surname}"></a>
+                </h4>
+                <p class="result-meta" th:if="${author.birthDate != null}">
+                    Nato il: <span th:text="${#dates.format(author.birthDate, 'dd/MM/yyyy')}"></span>
+                </p>
+            </div>
+        </section>
+        
+        <!-- Nessun risultato -->
+        <div class="no-results" th:if="${(books == null || books.isEmpty()) && (authors == null || authors.isEmpty()) && query != null}">
+            <h3>😔 Nessun risultato trovato</h3>
+            <p>La ricerca per "<strong th:text="${query}"></strong>" non ha prodotto risultati.</p>
+            <p>Prova con termini di ricerca diversi.</p>
+        </div>
+        
+        <!-- Nessuna ricerca effettuata -->
+        <div class="no-results" th:if="${query == null || query.isEmpty()}">
+            <h3>🔍 Effettua una ricerca</h3>
+            <p>Utilizza la barra di ricerca per cercare libri e autori.</p>
+        </div>
+    </div>
+    
+    <div th:replace="~{fragments/footer.html :: footer}"></div>
+</body>
+</html> 

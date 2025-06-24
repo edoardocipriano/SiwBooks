@@ -80,6 +80,51 @@
             border-top: 4px solid var(--accent-color);
         }
         
+        /* Hero Search Bar */
+        .hero-search {
+            max-width: 600px;
+            margin: 2rem auto;
+        }
+        
+        .hero-search-form {
+            display: flex;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-radius: 50px;
+            overflow: hidden;
+            background: white;
+        }
+        
+        .hero-search-input {
+            flex: 1;
+            padding: 1.25rem 2rem;
+            border: none;
+            font-size: 1.1rem;
+            background: transparent;
+        }
+        
+        .hero-search-input:focus {
+            outline: none;
+        }
+        
+        .hero-search-btn {
+            padding: 1.25rem 2.5rem;
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all var(--transition-speed) ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .hero-search-btn:hover {
+            transform: translateX(3px);
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        
         @media (max-width: 768px) {
             .hero-actions {
                 flex-direction: column;
@@ -88,6 +133,16 @@
             
             .features {
                 grid-template-columns: 1fr;
+            }
+            
+            .hero-search-input {
+                font-size: 1rem;
+                padding: 1rem 1.5rem;
+            }
+            
+            .hero-search-btn {
+                padding: 1rem 1.5rem;
+                font-size: 1rem;
             }
         }
     </style>
@@ -99,6 +154,20 @@
         <section class="hero fade-in">
             <h1>Benvenuto in SiwBooks</h1>
             <p class="lead">La tua libreria online per scoprire, condividere e recensire i tuoi libri preferiti</p>
+            
+            <!-- Barra di ricerca prominente -->
+            <div class="hero-search">
+                <form th:action="@{/search}" method="get" class="hero-search-form">
+                    <input type="text" 
+                           name="query" 
+                           placeholder="Cerca libri o autori..." 
+                           class="hero-search-input"
+                           autofocus>
+                    <button type="submit" class="hero-search-btn">
+                        <span>🔍 Cerca</span>
+                    </button>
+                </form>
+            </div>
             
             <div class="hero-actions">
                 <a th:href="@{/books}" class="btn btn-primary slide-in-left">Esplora Libri</a>
