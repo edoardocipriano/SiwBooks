@@ -1,7 +1,10 @@
 package it.siwbooks.service;
 
 import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,6 +18,12 @@ public class FileStorageService {
 
     @Value("${upload.dir}")
     private String uploadDir;
+
+    @Autowired
+    private Environment environment;
+
+    @Autowired(required = false)
+    private CloudinaryService cloudinaryService;
     
     @PostConstruct
     public void init() {
@@ -42,6 +51,19 @@ public class FileStorageService {
             return null;
         }
         
+        // Se siamo in produzione (Heroku) e Cloudinary è disponibile, usa Cloudinary
+        if (isProductionProfile() && cloudinaryService != null) {
+            try {
+                String cloudinaryUrl = cloudinaryService.uploadBookImage(file, bookId);
+                System.out.println("Saved image to Cloudinary: " + cloudinaryUrl);
+                return cloudinaryUrl;
+            } catch (IOException e) {
+                System.err.println("Failed to upload to Cloudinary, falling back to local storage: " + e.getMessage());
+                // Fallback al salvataggio locale
+            }
+        }
+        
+        // Salvataggio locale (sviluppo o fallback)
         try {
             Path bookFolder = Paths.get(uploadDir, String.valueOf(bookId));
             if (!Files.exists(bookFolder)) {
@@ -56,7 +78,7 @@ public class FileStorageService {
             
             Path destination = bookFolder.resolve(originalFilename);
             file.transferTo(destination);
-            System.out.println("Saved image to: " + destination.toAbsolutePath());
+            System.out.println("Saved image locally to: " + destination.toAbsolutePath());
             return originalFilename;
         } catch (IOException e) {
             System.err.println("Error saving image for book " + bookId + ": " + e.getMessage());
@@ -69,6 +91,19 @@ public class FileStorageService {
             return null;
         }
         
+        // Se siamo in produzione (Heroku) e Cloudinary è disponibile, usa Cloudinary
+        if (isProductionProfile() && cloudinaryService != null) {
+            try {
+                String cloudinaryUrl = cloudinaryService.uploadAuthorPhoto(file, authorId);
+                System.out.println("Saved author photo to Cloudinary: " + cloudinaryUrl);
+                return cloudinaryUrl;
+            } catch (IOException e) {
+                System.err.println("Failed to upload author photo to Cloudinary, falling back to local storage: " + e.getMessage());
+                // Fallback al salvataggio locale
+            }
+        }
+        
+        // Salvataggio locale (sviluppo o fallback)
         try {
             Path authorFolder = Paths.get(uploadDir, "authors", String.valueOf(authorId));
             if (!Files.exists(authorFolder)) {
@@ -83,7 +118,7 @@ public class FileStorageService {
             
             Path destination = authorFolder.resolve(originalFilename);
             file.transferTo(destination);
-            System.out.println("Saved author photo to: " + destination.toAbsolutePath());
+            System.out.println("Saved author photo locally to: " + destination.toAbsolutePath());
             return originalFilename;
         } catch (IOException e) {
             System.err.println("Error saving photo for author " + authorId + ": " + e.getMessage());
@@ -92,6 +127,16 @@ public class FileStorageService {
     }
     
     public String getImagePath(Long bookId, String fileName) {
+        // Se il fileName è già un URL completo (Cloudinary), restituiscilo così com'è
+        if (fileName != null && (fileName.startsWith("http://") || fileName.startsWith("https://"))) {
+            return fileName;
+        }
+        // Altrimenti restituisci il path locale
         return "/uploads/" + bookId + "/" + fileName;
+    }
+    
+    private boolean isProductionProfile() {
+        return environment != null && 
+               (environment.acceptsProfiles("heroku") || environment.acceptsProfiles("production"));
     }
 }
