@@ -29,7 +29,13 @@ public class AuthorController {
 
     @GetMapping("/{id}")
     public String showAuthor(@PathVariable Long id, Model model) {
-        authorService.findById(id).ifPresent(author -> model.addAttribute("author", author));
+        authorService.findById(id).ifPresent(author -> {
+            model.addAttribute("author", author);
+            if (author.getPhotoFileName() != null) {
+                String photoPath = fileStorageService.getAuthorPhotoPath(author.getId(), author.getPhotoFileName());
+                model.addAttribute("authorPhotoPath", photoPath);
+            }
+        });
         return "authors/details";
     }
 

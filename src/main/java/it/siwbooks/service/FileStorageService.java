@@ -135,6 +135,15 @@ public class FileStorageService {
         return "/uploads/" + bookId + "/" + fileName;
     }
     
+    public String getAuthorPhotoPath(Long authorId, String fileName) {
+        // Se il fileName è già un URL completo (Cloudinary), restituiscilo così com'è
+        if (fileName != null && (fileName.startsWith("http://") || fileName.startsWith("https://"))) {
+            return fileName;
+        }
+        // Altrimenti restituisci il path locale
+        return "/uploads/authors/" + authorId + "/" + fileName;
+    }
+    
     private boolean isProductionProfile() {
         return environment != null && 
                (environment.acceptsProfiles("heroku") || environment.acceptsProfiles("production"));

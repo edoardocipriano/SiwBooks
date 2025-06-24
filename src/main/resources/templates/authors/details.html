@@ -27,8 +27,8 @@
 <p>Nazionalità: <span th:text="${author.nationality}"></span></p>
 
 <h3>Foto:</h3>
-<img th:if="${author.photoFileName != null}" 
-     th:src="@{'/uploads/authors/' + ${author.id} + '/' + ${author.photoFileName}}" 
+<img th:if="${authorPhotoPath != null}" 
+     th:src="${authorPhotoPath}" 
      alt="Foto autore" width="200"/>
 
 <h3>Libri:</h3>
