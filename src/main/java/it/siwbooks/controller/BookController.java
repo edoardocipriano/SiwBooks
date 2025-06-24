@@ -4,7 +4,6 @@ import it.siwbooks.model.Book;
 import it.siwbooks.model.Image;
 import it.siwbooks.model.Author;
 import it.siwbooks.model.Review;
-import it.siwbooks.repository.ImageRepository;
 import it.siwbooks.service.BookService;
 import it.siwbooks.service.FileStorageService;
 import it.siwbooks.service.AuthorService;
@@ -35,9 +34,6 @@ public class BookController {
 
     @Autowired
     private FileStorageService fileStorageService;
-
-    @Autowired
-    private ImageRepository imageRepository;
 
     @Autowired
     private AuthorService authorService;
@@ -201,13 +197,7 @@ public class BookController {
                            @RequestParam(value = "authorIds", required = false) List<Long> authorIds,
                            RedirectAttributes redirectAttributes) {
         try {                   
-            // Se è un'operazione di edit, mantieni le immagini esistenti
-            List<Image> existingImages = new ArrayList<>();
-            if (book.getId() != null) {
-                bookService.findById(book.getId()).ifPresent(existingBook -> {
-                    existingImages.addAll(existingBook.getImages());
-                });
-            }
+            // Non serve più memorizzare le immagini esistenti separatamente
             
             if (authorIds != null) {
                 List<Author> authors = authorIds.stream()
@@ -229,30 +219,41 @@ public class BookController {
                 book.setImages(new ArrayList<>());
             }
             
-            final Book savedBook = bookService.save(book); // salva e ottieni l'ID
-            
-            // Se c'è un ID, imposta le immagini esistenti
-            Book updatedBook = savedBook;
-            if (savedBook.getId() != null && !existingImages.isEmpty()) {
-                updatedBook.setImages(existingImages);
-                updatedBook = bookService.save(updatedBook);
+            // Se è un'operazione di edit, recupera il libro esistente per mantenere le immagini
+            Book bookToSave = book;
+            if (book.getId() != null) {
+                Optional<Book> existingBookOpt = bookService.findById(book.getId());
+                if (existingBookOpt.isPresent()) {
+                    Book existingBook = existingBookOpt.get();
+                    // Aggiorna i campi del libro esistente invece di creare uno nuovo
+                    existingBook.setTitle(book.getTitle());
+                    existingBook.setPublicationYear(book.getPublicationYear());
+                    existingBook.setAuthors(book.getAuthors());
+                    bookToSave = existingBook;
+                }
             }
             
-            final Book finalBook = updatedBook;
+            final Book savedBook = bookService.save(bookToSave);
+            
             if (imageFiles != null) {
                 for (MultipartFile imageFile : imageFiles) {
                     if (!imageFile.isEmpty()) {
                         try {
-                            String fileName = fileStorageService.saveImage(imageFile, finalBook.getId());
+                            String fileName = fileStorageService.saveImage(imageFile, savedBook.getId());
                             Image image = new Image();
                             image.setFileName(fileName);
-                            image.setBook(finalBook);
-                            imageRepository.save(image);
+                            image.setBook(savedBook);
+                            // Aggiungi l'immagine alla collezione esistente invece di salvarla separatamente
+                            savedBook.getImages().add(image);
                         } catch (IOException e) {
                             System.err.println("Errore nel salvataggio dell'immagine: " + e.getMessage());
                             e.printStackTrace();
                         }
                     }
+                }
+                // Salva il libro di nuovo con le nuove immagini
+                if (imageFiles.length > 0) {
+                    bookService.save(savedBook);
                 }
             }
             
