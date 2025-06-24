@@ -197,7 +197,7 @@ public class BookController {
     @PostMapping("/admin/save")
     @Transactional
     public String saveBook(@ModelAttribute Book book,
-                           @RequestParam("imageFiles") MultipartFile[] imageFiles,
+                           @RequestParam(value = "imageFiles", required = false) MultipartFile[] imageFiles,
                            @RequestParam(value = "authorIds", required = false) List<Long> authorIds,
                            RedirectAttributes redirectAttributes) {
         try {                   
@@ -239,17 +239,19 @@ public class BookController {
             }
             
             final Book finalBook = updatedBook;
-            for (MultipartFile imageFile : imageFiles) {
-                if (!imageFile.isEmpty()) {
-                    try {
-                        String fileName = fileStorageService.saveImage(imageFile, finalBook.getId());
-                        Image image = new Image();
-                        image.setFileName(fileName);
-                        image.setBook(finalBook);
-                        imageRepository.save(image);
-                    } catch (IOException e) {
-                        System.err.println("Errore nel salvataggio dell'immagine: " + e.getMessage());
-                        e.printStackTrace();
+            if (imageFiles != null) {
+                for (MultipartFile imageFile : imageFiles) {
+                    if (!imageFile.isEmpty()) {
+                        try {
+                            String fileName = fileStorageService.saveImage(imageFile, finalBook.getId());
+                            Image image = new Image();
+                            image.setFileName(fileName);
+                            image.setBook(finalBook);
+                            imageRepository.save(image);
+                        } catch (IOException e) {
+                            System.err.println("Errore nel salvataggio dell'immagine: " + e.getMessage());
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
