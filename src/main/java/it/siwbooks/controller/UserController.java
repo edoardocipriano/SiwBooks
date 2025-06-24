@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Controller
@@ -28,8 +29,22 @@ public class UserController {
     private BCryptPasswordEncoder passwordEncoder;
 
     @GetMapping("/user/profile")
+    @Transactional
     public String userProfile(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        if (userDetails == null) {
+            return "redirect:/login";
+        }
+        
         User user = userService.findByUsername(userDetails.getUsername()).orElse(null);
+        if (user == null) {
+            return "redirect:/login";
+        }
+        
+        // Inizializza le recensioni per evitare LazyInitializationException
+        if (user.getReviews() != null) {
+            user.getReviews().size(); // Force initialization
+        }
+        
         model.addAttribute("user", user);
         return "user/profile";
     }

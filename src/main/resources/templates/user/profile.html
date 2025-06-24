@@ -1,19 +1,43 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Profilo</title>
+    <title>Profilo Utente</title>
     <th:block th:replace="~{fragments/imports.html :: head}"></th:block>
 </head>
 <body>
     <div th:replace="~{fragments/header.html :: header}"></div>
-    <h2>Profilo di <span th:text="${user.username}"></span></h2>
-    <h3>Le tue recensioni:</h3>
-    <ul>
-        <li th:each="review : ${user.reviews}">
-            <strong th:text="${review.book.title}"></strong> -
-            <span th:text="${review.rating}"></span> stelle -
-            <em th:text="${review.title}"></em>
-        </li>
-    </ul>
+    
+    <div class="container">
+        <h2>👤 Profilo di <span th:text="${user.username}"></span></h2>
+        
+        <div class="user-info">
+            <p><strong>Username:</strong> <span th:text="${user.username}"></span></p>
+            <p><strong>Ruolo:</strong> <span th:text="${user.role}"></span></p>
+        </div>
+        
+        <h3>📚 Le tue recensioni:</h3>
+        <div th:if="${user.reviews == null || user.reviews.isEmpty()}" class="message">
+            <p>Non hai ancora scritto recensioni. Esplora i libri e condividi le tue opinioni!</p>
+            <a th:href="@{/books}" class="btn btn-primary">Sfoglia i Libri</a>
+        </div>
+        
+        <ul th:if="${user.reviews != null && !user.reviews.isEmpty()}" class="review-list">
+            <li th:each="review : ${user.reviews}" class="review-item">
+                <div class="review-header">
+                    <strong>
+                        <a th:href="@{/books/{id}(id=${review.book.id})}" th:text="${review.book.title}"></a>
+                    </strong>
+                    <span class="rating">⭐ <span th:text="${review.rating}"></span>/5</span>
+                </div>
+                <em class="review-title" th:text="${review.title}"></em>
+                <p class="review-text" th:text="${review.text}"></p>
+                <div class="review-actions">
+                    <a th:href="@{/reviews/edit/{id}(id=${review.id})}" class="btn-small btn-edit">✏️ Modifica</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+    
+    <div th:replace="~{fragments/footer.html :: footer}"></div>
 </body>
 </html>
