@@ -818,6 +818,7 @@ a:not(nav a):hover:after {
     display: flex;
     gap: 0.5rem;
     align-items: center;
+    flex-wrap: nowrap;
 }
 
 .review-actions form {
@@ -826,6 +827,13 @@ a:not(nav a):hover:after {
 }
 
 .review-actions .btn-small {
+    margin: 0;
+}
+
+.review-actions .item-actions {
+    display: inline-flex;
+    gap: 0.5rem;
+    align-items: center;
     margin: 0;
 }
 
