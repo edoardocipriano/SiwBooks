@@ -29,8 +29,7 @@ public class CloudinaryService {
                     "overwrite", true,
                     "resource_type", "auto",
                     "transformation", ObjectUtils.asMap(
-                            "quality", "auto:good",
-                            "fetch_format", "auto"
+                            "quality", "auto:good"
                     )
             );
 
