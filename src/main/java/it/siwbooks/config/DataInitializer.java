@@ -4,6 +4,7 @@ import it.siwbooks.model.Role;
 import it.siwbooks.model.User;
 import it.siwbooks.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,13 +18,19 @@ public class DataInitializer implements CommandLineRunner {
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
+    
+    @Value("${spring.security.user.name:admin}")
+    private String adminUsername;
+    
+    @Value("${spring.security.user.password:admin}")
+    private String adminPassword;
 
     @Override
     @Transactional
     public void run(String... args) throws Exception {
         System.out.println("=== Inizializzazione dati ===");
-        createUserIfNotExists("admin_prova", "admin123", Role.ADMIN);
-        createUserIfNotExists("user_prova", "user123", Role.USER);
+        createUserIfNotExists(adminUsername, adminPassword, Role.ADMIN);
+        createUserIfNotExists("user_demo", "user123", Role.USER);
         System.out.println("=== Fine inizializzazione dati ===");
     }
 
