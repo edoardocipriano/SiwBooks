@@ -378,6 +378,60 @@ public class ReviewController {
         }
     }
 
+    // Cancellazione per l'utente proprietario della recensione
+    @GetMapping("/delete/{id}")
+    @Transactional
+    public String deleteOwnReview(@PathVariable Long id, 
+                                  @AuthenticationPrincipal UserDetails userDetails,
+                                  RedirectAttributes redirectAttributes) {
+        if (userDetails == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Devi effettuare l'accesso per cancellare una recensione");
+            return "redirect:/books";
+        }
+        
+        try {
+            // Recupera la recensione
+            Review review = reviewService.findById(id).orElse(null);
+            if (review == null) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Recensione non trovata");
+                return "redirect:/books";
+            }
+            
+            // Recupera l'utente corrente
+            User user = userService.findByUsername(userDetails.getUsername()).orElse(null);
+            if (user == null) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Utente non trovato");
+                return "redirect:/books";
+            }
+            
+            // Verifica che la recensione appartenga all'utente corrente
+            if (review.getUser() == null || !review.getUser().getId().equals(user.getId())) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Non sei autorizzato a cancellare questa recensione");
+                if (review.getBook() != null) {
+                    return "redirect:/books/" + review.getBook().getId();
+                }
+                return "redirect:/books";
+            }
+            
+            // Salva l'ID del libro prima di cancellare
+            Long bookId = review.getBook() != null ? review.getBook().getId() : null;
+            
+            // Cancella la recensione
+            reviewService.deleteById(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Recensione eliminata con successo");
+            
+            // Reindirizza alla pagina del libro
+            if (bookId != null) {
+                return "redirect:/books/" + bookId;
+            }
+        } catch (Exception e) {
+            System.err.println("Errore nell'eliminazione della recensione: " + e.getMessage());
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("errorMessage", "Errore nell'eliminazione della recensione");
+        }
+        return "redirect:/books";
+    }
+
     // Cancellazione (solo admin)
     @GetMapping("/admin/delete/{id}")
     @Transactional

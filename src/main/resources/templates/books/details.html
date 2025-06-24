@@ -63,12 +63,19 @@
                     </form>
                 </span>
                 
-                <!-- User edit button for own reviews -->
+                <!-- User edit and delete buttons for own reviews -->
                 <span th:if="${#authorization.expression('isAuthenticated()')}" class="item-actions">
                     <span th:with="authenticated=${#authentication.principal.username}">
                         <a th:if="${review.user != null && review.user.username == authenticated}" 
                            th:href="@{/reviews/edit/{id}(id=${review.id})}" 
                            class="btn-small btn-edit">Modifica</a>
+                        <form th:if="${review.user != null && review.user.username == authenticated}" 
+                              th:action="@{/reviews/delete/{id}(id=${review.id})}" 
+                              method="get" 
+                              style="display: inline;">
+                            <button type="submit" class="btn-small btn-delete" 
+                                    onclick="return confirm('Sei sicuro di voler eliminare la tua recensione?');">Elimina</button>
+                        </form>
                     </span>
                 </span>
             </div>
