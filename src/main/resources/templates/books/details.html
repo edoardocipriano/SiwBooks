@@ -41,8 +41,8 @@
     </ul>
     
     <h3>Immagini:</h3>
-    <div th:each="img : ${book.images}" style="display: inline-block; margin: 10px;">
-        <img th:src="@{'/uploads/' + ${book.id} + '/' + ${img.fileName}}" width="200" />
+    <div th:each="imagePath, stat : ${imagePaths}" style="display: inline-block; margin: 10px;">
+        <img th:src="${imagePath}" width="200" />
     </div>
     
     <h3>Recensioni:</h3>

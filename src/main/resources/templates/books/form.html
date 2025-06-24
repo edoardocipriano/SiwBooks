@@ -85,13 +85,13 @@
             </div>
 
             <!-- Immagini Esistenti -->
-            <div th:if="${isEdit != null && isEdit && book.images != null && !book.images.isEmpty()}">
+            <div th:if="${isEdit != null && isEdit && existingImagePaths != null && !existingImagePaths.isEmpty()}">
                 <h4 style="margin: 2rem 0 1rem 0; color: var(--primary-color);">
                     <span style="margin-right: 0.5rem;">🖼️</span>Immagini Esistenti
                 </h4>
                 <div class="existing-images">
-                    <div th:each="img : ${book.images}" class="thumbnail">
-                        <img th:src="@{'/uploads/' + ${book.id} + '/' + ${img.fileName}}" 
+                    <div th:each="imagePath : ${existingImagePaths}" class="thumbnail">
+                        <img th:src="${imagePath}" 
                              th:alt="${book.title + ' - Immagine'}" />
                     </div>
                 </div>

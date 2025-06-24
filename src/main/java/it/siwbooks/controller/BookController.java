@@ -111,7 +111,17 @@ public class BookController {
                     }
                 }
                 
+                // Genera i path corretti per le immagini
+                List<String> imagePaths = new ArrayList<>();
+                if (book.getImages() != null) {
+                    for (Image image : book.getImages()) {
+                        String imagePath = fileStorageService.getImagePath(book.getId(), image.getFileName());
+                        imagePaths.add(imagePath);
+                    }
+                }
+                
                 model.addAttribute("book", book);
+                model.addAttribute("imagePaths", imagePaths);
                 model.addAttribute("userHasReviewed", Boolean.valueOf(userHasReviewed));
                 return "books/details";
             } else {
@@ -160,6 +170,17 @@ public class BookController {
                         .collect(Collectors.toList());
                     model.addAttribute("selectedAuthorIds", selectedAuthorIds);
                 }
+                
+                // Genera i path corretti per le immagini esistenti
+                List<String> existingImagePaths = new ArrayList<>();
+                if (book.getImages() != null) {
+                    for (Image image : book.getImages()) {
+                        String imagePath = fileStorageService.getImagePath(book.getId(), image.getFileName());
+                        existingImagePaths.add(imagePath);
+                    }
+                }
+                model.addAttribute("existingImagePaths", existingImagePaths);
+                
                 return "books/form";
             } else {
                 model.addAttribute("errorMessage", "Libro non trovato");
