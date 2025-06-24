@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.security.core.Authentication;
 
 @Controller
 @RequestMapping("/reviews")
@@ -379,61 +380,34 @@ public class ReviewController {
     }
 
     // Cancellazione per l'utente proprietario della recensione
-    @GetMapping("/delete/{id}")
+    @PostMapping("/delete/{id}")
     @Transactional
-    public String deleteOwnReview(@PathVariable Long id, 
-                                  @AuthenticationPrincipal UserDetails userDetails,
-                                  RedirectAttributes redirectAttributes) {
-        if (userDetails == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Devi effettuare l'accesso per cancellare una recensione");
-            return "redirect:/books";
-        }
-        
+    public String deleteReview(@PathVariable("id") Long id, Model model, Authentication authentication) {
         try {
-            // Recupera la recensione
             Review review = reviewService.findById(id).orElse(null);
             if (review == null) {
-                redirectAttributes.addFlashAttribute("errorMessage", "Recensione non trovata");
-                return "redirect:/books";
+                model.addAttribute("errorMessage", "Recensione non trovata.");
+                return "error";
             }
             
-            // Recupera l'utente corrente
-            User user = userService.findByUsername(userDetails.getUsername()).orElse(null);
-            if (user == null) {
-                redirectAttributes.addFlashAttribute("errorMessage", "Utente non trovato");
-                return "redirect:/books";
+            // Check if user is the owner of the review
+            String currentUsername = authentication.getName();
+            if (!review.getUser().getUsername().equals(currentUsername)) {
+                model.addAttribute("errorMessage", "Non hai i permessi per eliminare questa recensione.");
+                return "error";
             }
             
-            // Verifica che la recensione appartenga all'utente corrente
-            if (review.getUser() == null || !review.getUser().getId().equals(user.getId())) {
-                redirectAttributes.addFlashAttribute("errorMessage", "Non sei autorizzato a cancellare questa recensione");
-                if (review.getBook() != null) {
-                    return "redirect:/books/" + review.getBook().getId();
-                }
-                return "redirect:/books";
-            }
-            
-            // Salva l'ID del libro prima di cancellare
-            Long bookId = review.getBook() != null ? review.getBook().getId() : null;
-            
-            // Cancella la recensione
+            Long bookId = review.getBook().getId();
             reviewService.deleteById(id);
-            redirectAttributes.addFlashAttribute("successMessage", "Recensione eliminata con successo");
-            
-            // Reindirizza alla pagina del libro
-            if (bookId != null) {
-                return "redirect:/books/" + bookId;
-            }
+            return "redirect:/books/" + bookId;
         } catch (Exception e) {
-            System.err.println("Errore nell'eliminazione della recensione: " + e.getMessage());
-            e.printStackTrace();
-            redirectAttributes.addFlashAttribute("errorMessage", "Errore nell'eliminazione della recensione");
+            model.addAttribute("errorMessage", "Errore durante l'eliminazione della recensione: " + e.getMessage());
+            return "error";
         }
-        return "redirect:/books";
     }
 
     // Cancellazione (solo admin)
-    @GetMapping("/admin/delete/{id}")
+    @PostMapping("/admin/delete/{id}")
     @Transactional
     public String deleteReview(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {

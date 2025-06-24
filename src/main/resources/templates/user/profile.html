@@ -34,8 +34,9 @@
                 <div class="review-actions">
                     <a th:href="@{/reviews/edit/{id}(id=${review.id})}" class="btn-small btn-edit">✏️ Modifica</a>
                     <form th:action="@{/reviews/delete/{id}(id=${review.id})}" 
-                          method="get" 
+                          method="post" 
                           style="display: inline;">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                         <button type="submit" class="btn-small btn-delete" 
                                 onclick="return confirm('Sei sicuro di voler eliminare questa recensione?');">🗑️ Elimina</button>
                     </form>

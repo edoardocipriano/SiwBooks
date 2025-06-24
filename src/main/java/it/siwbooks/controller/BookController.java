@@ -268,7 +268,7 @@ public class BookController {
     }     
 
     // Cancellazione (solo admin)
-    @GetMapping("/admin/delete/{id}")
+    @PostMapping("/admin/delete/{id}")
     @Transactional
     public String deleteBook(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {

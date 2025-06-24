@@ -23,7 +23,8 @@
             <a th:href="@{/books/admin/edit/{id}(id=${book.id})}" class="btn btn-edit">
                 <span class="btn-icon">✏️</span> Modifica
             </a>
-            <form th:action="@{/books/admin/delete/{id}(id=${book.id})}" method="get">
+            <form th:action="@{/books/admin/delete/{id}(id=${book.id})}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                 <button type="submit" class="btn btn-delete" onclick="return confirm('Sei sicuro di voler eliminare questo libro?');">
                     <span class="btn-icon">🗑️</span> Elimina
                 </button>
@@ -58,8 +59,9 @@
             <div class="review-actions">
                 <!-- Admin delete button -->
                 <span th:if="${#authorization.expression('hasRole(''ADMIN'')')}" class="item-actions">
-                    <form th:action="@{/reviews/admin/delete/{id}(id=${review.id})}" method="get" style="display: inline;">
-                        <button type="submit" class="btn-small btn-delete" onclick="return confirm('Sei sicuro di voler eliminare questa recensione?');">Elimina</button>
+                    <form th:action="@{/reviews/admin/delete/{id}(id=${review.id})}" method="post" style="display: inline;">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                        <button type="submit" class="btn-small btn-delete" onclick="return confirm('Sei sicuro di voler eliminare questa recensione?');">🗑️ Elimina</button>
                     </form>
                 </span>
                 
@@ -68,13 +70,14 @@
                     <span th:with="authenticated=${#authentication.principal.username}">
                         <a th:if="${review.user != null && review.user.username == authenticated}" 
                            th:href="@{/reviews/edit/{id}(id=${review.id})}" 
-                           class="btn-small btn-edit">Modifica</a>
+                           class="btn-small btn-edit">✏️ Modifica</a>
                         <form th:if="${review.user != null && review.user.username == authenticated}" 
                               th:action="@{/reviews/delete/{id}(id=${review.id})}" 
-                              method="get" 
+                              method="post" 
                               style="display: inline;">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                             <button type="submit" class="btn-small btn-delete" 
-                                    onclick="return confirm('Sei sicuro di voler eliminare la tua recensione?');">Elimina</button>
+                                    onclick="return confirm('Sei sicuro di voler eliminare la tua recensione?');">🗑️ Elimina</button>
                         </form>
                     </span>
                 </span>

@@ -803,14 +803,41 @@ a:not(nav a):hover:after {
 }
 
 .review:hover {
-    transform: translateY(-5px);
+    transform: translateX(5px);
     box-shadow: var(--card-hover-shadow);
 }
 
 .review .rating {
     color: #f39c12;
-    font-size: 1.2rem;
-    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+/* Review Actions Styling */
+.review-actions {
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.review-actions form {
+    display: inline-flex;
+    margin: 0;
+}
+
+.review-actions .btn-small {
+    margin: 0;
+}
+
+.item-actions {
+    display: inline-flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.item-actions form {
+    display: inline-flex;
+    margin: 0;
 }
 
 /* Form Styles */
