@@ -86,39 +86,37 @@ body::before {
 
 /* Header and Navigation - SINGLE CONSOLIDATED VERSION */
 header {
-    background: var(--glass-bg);
-    backdrop-filter: var(--backdrop-blur);
-    -webkit-backdrop-filter: var(--backdrop-blur);
+    background: linear-gradient(135deg, var(--card-bg-color) 0%, rgba(255, 255, 255, 0.98) 100%);
     padding: var(--spacing-lg) var(--spacing-xl);
-    margin-bottom: var(--spacing-xxl);
-    border-radius: var(--border-radius);
-    box-shadow: var(--box-shadow);
-    border: 1px solid var(--border-light);
-    transition: all var(--transition-speed) var(--transition-curve);
+    margin-bottom: var(--spacing-xl);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
 }
 
 header:hover {
-    box-shadow: var(--card-hover-shadow);
-    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
 }
 
+/* Layout a tre colonne per la navbar */
 nav {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    flex-wrap: wrap;
-    gap: var(--spacing-md);
+    gap: var(--spacing-lg);
+    width: 100%;
 }
 
 .nav-main {
     display: flex;
     gap: var(--spacing-lg);
+    justify-self: start;
 }
 
 .nav-search {
-    flex: 1;
+    width: 100%;
     max-width: 500px;
-    margin: 0 var(--spacing-lg);
 }
 
 .search-form {
@@ -163,6 +161,7 @@ nav {
     display: flex;
     align-items: center;
     gap: var(--spacing-md);
+    justify-self: end;
 }
 
 .nav-authenticated,
@@ -626,7 +625,7 @@ img:hover {
     }
 
     nav {
-        flex-direction: column;
+        grid-template-columns: 1fr;
         gap: var(--spacing-sm);
     }
 
@@ -635,12 +634,19 @@ img:hover {
     .nav-guest {
         flex-wrap: wrap;
         justify-content: center;
+        justify-self: center;
     }
     
     .nav-search {
         width: 100%;
         margin: var(--spacing-sm) 0;
         max-width: none;
+        order: -1;
+        justify-self: stretch;
+    }
+    
+    .nav-user {
+        justify-self: center;
     }
     
     .search-form {
