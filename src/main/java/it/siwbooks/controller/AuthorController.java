@@ -50,6 +50,10 @@ public class AuthorController {
         authorService.findById(id).ifPresent(author -> {
             model.addAttribute("author", author);
             model.addAttribute("isEdit", true);
+            if (author.getPhotoFileName() != null) {
+                String photoPath = fileStorageService.getAuthorPhotoPath(author.getId(), author.getPhotoFileName());
+                model.addAttribute("authorPhotoPath", photoPath);
+            }
         });
         return "authors/form";
     }

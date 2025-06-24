@@ -56,7 +56,9 @@
             
             <div class="form-grid">
                 <div class="form-group floating-label">
-                    <input type="date" id="birthDate" th:field="*{birthDate}" placeholder=" " required />
+                    <input type="date" id="birthDate" th:field="*{birthDate}" 
+                           th:value="${author.birthDate != null ? #temporals.format(author.birthDate, 'yyyy-MM-dd') : ''}" 
+                           placeholder=" " required />
                     <label for="birthDate">Data di Nascita</label>
                     <div class="form-help">
                         <span class="form-help-icon">🎂</span>
@@ -65,7 +67,9 @@
                 </div>
 
                 <div class="form-group floating-label">
-                    <input type="date" id="deathDate" th:field="*{deathDate}" placeholder=" " />
+                    <input type="date" id="deathDate" th:field="*{deathDate}" 
+                           th:value="${author.deathDate != null ? #temporals.format(author.deathDate, 'yyyy-MM-dd') : ''}" 
+                           placeholder=" " />
                     <label for="deathDate">Data di Morte</label>
                     <div class="form-help">
                         <span class="form-help-icon">🕊️</span>
@@ -98,13 +102,13 @@
             </div>
 
             <!-- Foto Esistente -->
-            <div th:if="${isEdit != null && isEdit && author.photoFileName != null}">
+            <div th:if="${isEdit != null && isEdit && authorPhotoPath != null}">
                 <h4 style="margin: 2rem 0 1rem 0; color: var(--primary-color);">
                     <span style="margin-right: 0.5rem;">🖼️</span>Foto Attuale
                 </h4>
                 <div class="existing-images">
                     <div class="thumbnail">
-                        <img th:src="@{'/uploads/authors/' + ${author.id} + '/' + ${author.photoFileName}}" 
+                        <img th:src="${authorPhotoPath}" 
                              alt="Foto autore" />
                     </div>
                 </div>
